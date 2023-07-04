@@ -2,9 +2,9 @@
 ErgoScript contracts for the Phoenix implementation of HodlCoin.
 
 ## Contracts
-1. [Proxy Contract]()
+1. [Proxy Contract](/contracts/proxy_contract/README.md)
 2. [Bank Contract](/contracts/bank_contract/README.md)
-3. [Phoenix Fee Contract]()
+3. [Phoenix Fee Contract](/contracts/phoenix_fee_contract/README.md)
 
 ## Transactions
 1. Mint Tx
