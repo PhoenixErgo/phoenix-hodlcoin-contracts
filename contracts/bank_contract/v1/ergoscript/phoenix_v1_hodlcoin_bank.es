@@ -10,6 +10,8 @@
     // Tokens
     // 1. (BankSingletonId, 1)
     // 2. (HodlCoinTokenId, HodlCoinTokenAmount)
+    // Registers
+    // None
     
     // ===== Relevant Transactions ===== //
     // 1. Mint Tx
