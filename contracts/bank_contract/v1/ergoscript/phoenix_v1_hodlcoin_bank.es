@@ -34,6 +34,7 @@
     val bankFee: (Long, Long) = (3L, 100L)
     val devFee: (Long, Long) = (5L, 100L)                       
     val precisionFactor: Long = 1000000000L
+    val minerFeeAddress: SigmaProp = PK("2iHkR7CWvD1R4j1yZg5bkeDRQavjAaVPeTDFGGLZduHyfWMuYpmhHocX8GJoaieTx78FntzJbCBVL6rf96ocJoZdmWBL2fci7NqWgAirppPQmZ7fN9V6z13Ay6brPriBKYqLp1bT2Fk4FkFLCfdPpe")
 
     // Bank Input
     val reserveIn: Long = SELF.value
@@ -118,7 +119,14 @@
 
             }
 
-            val validMinerFee: Boolean = (minerFeeBoxOUT.value == minerFee)
+            val validMinerFee: Boolean = {
+
+                allOf(Coll(
+                    (minerFeeBoxOUT.value == minerFee),
+                    (minerFeeBoxOUT.propositionBytes == minerFeeAddress.propBytes)
+                ))
+
+            }
 
             val validTxOperatorFee: Boolean = (txOperatorBoxOUT.value >= minTxOperatorFee)
 
@@ -135,9 +143,7 @@
             ))
 
         }
-
-        sigmaProp(validMintTx)
-
+    
     } else {
 
         // ===== Burn Tx ===== //
@@ -179,7 +185,14 @@
 
             }
 
-            val validMinerFee: Boolean = (minerFeeBoxOUT.value == minerFee)
+            val validMinerFee: Boolean = {
+
+                allOf(Coll(
+                    (minerFeeBoxOUT.value == minerFee),
+                    (minerFeeBoxOUT.propositionBytes == minerFeeAddress.propBytes)
+                ))
+
+            }
 
             val validTxOperatorFee: Boolean = (txOperatorBoxOUT.value >= minTxOperatorFee)
 
