@@ -56,8 +56,8 @@
     // Inputs
     val proxyBoxIN: Box = INPUTS(0)
     val userPK: SigmaProp = proxyBoxIN.R4[SigmaProp].get
-    val minerFee: Long = proxyBoxIN.R5[Long].get
-    val minBoxValue: Long = proxyBoxIN.R6[Long].get
+    val minBoxValue: Long = proxyBoxIN.R5[Long].get
+    val minerFee: Long = proxyBoxIN.R6[Long].get
     val minTxOperatorFee: Long = proxyBoxIN.R7[Long].get
 
     // Outputs
