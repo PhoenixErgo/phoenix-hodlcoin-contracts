@@ -30,6 +30,7 @@ Registers
 
 ### Compile Time Constants ($)
 - $phoenixFeeContractBytes: Coll[Byte]
+- $minTxOperatorFee: Long
 
 ### Context Variables (@)
 - None

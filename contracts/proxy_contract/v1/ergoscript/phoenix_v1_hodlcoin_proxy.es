@@ -13,8 +13,7 @@
     // R4: SigmaProp    UserPK
     // R5: Long         MinBoxValue
     // R6: Long         MinerFee
-    // R7: Long         MinTxOperatorFee
-    // R8: Coll[Byte]   BankSingletonTokenId
+    // R7: Coll[Byte]   BankSingletonTokenId
 
     // ===== Relevant Transactions ===== //
     // 1. Mint Tx

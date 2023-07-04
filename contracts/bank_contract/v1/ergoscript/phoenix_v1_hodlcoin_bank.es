@@ -27,6 +27,7 @@
 
     // ===== Compile Time Constants ($) ===== //
     // $phoenixFeeContractBytes: Coll[Byte]
+    // $minTxOperatorFee: Long
 
     // ===== Context Variables (@) ===== //
     // None
@@ -58,7 +59,6 @@
     val userPK: SigmaProp = proxyBoxIN.R4[SigmaProp].get
     val minBoxValue: Long = proxyBoxIN.R5[Long].get
     val minerFee: Long = proxyBoxIN.R6[Long].get
-    val minTxOperatorFee: Long = proxyBoxIN.R7[Long].get
 
     // Outputs
     val userPKBoxOUT: Box = OUTPUTS(1)
@@ -130,7 +130,7 @@
 
             }
 
-            val validTxOperatorFee: Boolean = (txOperatorBoxOUT.value >= minTxOperatorFee)
+            val validTxOperatorFee: Boolean = (txOperatorBoxOUT.value >= $minTxOperatorFee)
 
             val validOutputSize: Boolean = (OUTPUTS.size == 4)
 
@@ -158,8 +158,8 @@
 
             val hodlCoinsBurned: Long = hodlCoinsOut - hodlCoinsIn
             val expectedAmountBeforeFees: Long = (hodlCoinsBurned * price) / precisionFactor
-            val bankFeeAmount: Long = (expectedAmountBeforeFees * bankFee._1) / (bankFee._2 * precisionFactor)
-            val devFeeAmount: Long = (expectedAmountBeforeFees * devFee._1) / (devFee._2 * precisionFactor)
+            val bankFeeAmount: Long = (expectedAmountBeforeFees * bankFee._1) / bankFee._2
+            val devFeeAmount: Long = (expectedAmountBeforeFees * devFee._1) / devFee._2
             val expectedAmountWithdrawn: Long = expectedAmountBeforeFees - bankFeeAmount - devFeeAmount // The user never gets the bankFeeAmount since it remains in the bank box, the devFeeAmount is the only ERG that leaves the box.
 
             val validBurn: Boolean = (proxyBoxIN.tokens(0) == (SELF.tokens(1)._1, hodlCoinsBurned))
@@ -196,7 +196,7 @@
 
             }
 
-            val validTxOperatorFee: Boolean = (txOperatorBoxOUT.value >= minTxOperatorFee)
+            val validTxOperatorFee: Boolean = (txOperatorBoxOUT.value >= $minTxOperatorFee)
 
             val validOutputSize: Boolean = (OUTPUTS.size == 5)
 
