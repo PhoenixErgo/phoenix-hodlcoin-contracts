@@ -69,7 +69,7 @@
         val validPhoenixBox: Boolean = {
 
             allOf(Coll(
-                (phoenixBoxOUT.value == (phoenixPercentage._1 * devAmount) / phoenixPercentage._2)
+                (phoenixBoxOUT.value == (phoenixPercentage._1 * devAmount) / phoenixPercentage._2),
                 (phoenixBoxOUT.propositionBytes == phoenixAddress.propBytes)
             ))
 
