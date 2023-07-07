@@ -56,11 +56,11 @@
         val validDevBoxes: Boolean = {
 
             allOf(Coll(
-                (dev1BoxOUT.value == (devPercentage._1 * devAmount) / devPercentage._2),
+                (dev1BoxOUT.value == (devPercentage._1 * devAmount) / devPercentage._2 / 3L),
                 (dev1BoxOUT.propositionBytes == dev1Address.propBytes),
-                (dev2BoxOUT.value == (devPercentage._1 * devAmount / devPercentage._2)),
+                (dev2BoxOUT.value == (devPercentage._1 * devAmount) / devPercentage._2 / 3L),
                 (dev2BoxOUT.propositionBytes = dev2Address.propBytes),
-                (dev3BoxOUT.value == (devPercentage._1 * devAmount) / devPercentage._2),
+                (dev3BoxOUT.value == (devPercentage._1 * devAmount) / devPercentage._2 / 3L),
                 (dev3BoxOUT.propositionBytes == dev3Address.propBytes)
             ))
 
