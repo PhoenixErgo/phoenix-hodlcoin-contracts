@@ -23,7 +23,9 @@ Registers
 - Context Variables: None
 
 ### Compile Time Constants ($)
-- None
+- $devPercentage: (Long, Long)
+- $phoenixPercentage: (Long, Long)
+- $minerFee: Long
 
 ### Context Variables (@)
 - None
