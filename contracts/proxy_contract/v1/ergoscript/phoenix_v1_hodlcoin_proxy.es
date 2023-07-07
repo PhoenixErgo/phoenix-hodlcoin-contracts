@@ -194,7 +194,7 @@
             val validBuyerBoxOUT: Boolean = {
 
                 allOf(Coll(
-                    (buyerPKBoxOUT.value == SELF.value),
+                    (buyerPKBoxOUT.value == SELF.value - minerFee),
                     (buyerPKBoxOUT.propositionBytes == buyerPK.propBytes),
                     (buyerPKBoxOUT.tokens == SELF.tokens)
                 ))
@@ -210,9 +210,12 @@
 
             }
 
+            val validOutputSize: Boolean = (OUTPUTS.size == 2)
+
             allOf(Coll(
                 validBuyerBoxOUT,
-                validMinerFee
+                validMinerFee,
+                validOutputSize
             ))
 
         }
