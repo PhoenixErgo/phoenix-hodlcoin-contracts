@@ -49,7 +49,7 @@
 
         val validPercentages: Boolean = {
 
-            (devPercentage._1 * phoenixPercentage._2 + phoenixPercentage._1 * devPercentage._2) = (devPercentage._2 * phoenixPercentage._2) // (a/b + c/d = 1 => ad + cb = bd)
+            (devPercentage._1 * phoenixPercentage._2 + phoenixPercentage._1 * devPercentage._2) == (devPercentage._2 * phoenixPercentage._2) // (a/b + c/d = 1 => ad + cb = bd)
 
         }
 
