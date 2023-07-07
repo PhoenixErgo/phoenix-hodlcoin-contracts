@@ -30,7 +30,7 @@
     // Context Variables: None
 
     // ===== Compile Time Constants ($) ===== //
-    // None
+    // $phoenixFeeContractBytes: Coll[Byte]
 
     // ===== Context Variables (@) ===== //
     // None
@@ -131,7 +131,7 @@
 
                 allOf(Coll(
                     (phoenixFeeBoxOUT.value == devFeeAmount),
-                    (phoenixFeeBoxOUT.propositionBytes == phoenixFeeContractBytes)
+                    (phoenixFeeBoxOUT.propositionBytes == $phoenixFeeContractBytes)
                 ))
 
             }
