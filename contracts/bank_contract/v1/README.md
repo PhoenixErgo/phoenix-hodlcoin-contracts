@@ -17,8 +17,8 @@ Registers
 - R4: Long          TotalTokenSupply
 - R5: Long          PrecisionFactor
 - R6: Long          MinBankValue
-- R7: (Long, Long)  BankFee 
-- R8: (Long, Long)  DevFee
+- R7: Long          BankFeeNum 
+- R8: Long          DevFeeNum
 
 ### Relevant Transactions
 1. Mint Tx
@@ -33,7 +33,7 @@ Registers
 - ContextVariables: None
 
 ### Compile Time Constants ($)
-- $phoenixFeeContractBytes: Coll[Byte]
+- $phoenixFeeContractBytesHash: Coll[Byte]
 
 ### Context Variables (@)
 - None

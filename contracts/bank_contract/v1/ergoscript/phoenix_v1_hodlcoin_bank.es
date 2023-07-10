@@ -14,8 +14,8 @@
     // R4: Long             TotalTokenSupply
     // R5: Long             PrecisionFactor
     // R6: Long             MinBankValue
-    // R7: (Long, Long)     BankFee
-    // R8: (Long, Long)     DevFee
+    // R7: Long             BankFeeNum
+    // R8: Long             DevFeeNum
     
     // ===== Relevant Transactions ===== //
     // 1. Mint Tx
@@ -30,7 +30,7 @@
     // Context Variables: None
 
     // ===== Compile Time Constants ($) ===== //
-    // $phoenixFeeContractBytes: Coll[Byte]
+    // $phoenixFeeContractBytesHash: Coll[Byte]
 
     // ===== Context Variables (@) ===== //
     // None
@@ -39,8 +39,9 @@
     val totalTokenSupply: Long      = SELF.R4[Long].get
     val precisionFactor: Long       = SELF.R5[Long].get
     val minBankValue: Long          = SELF.R6[Long].get
-    val devFee: (Long, Long)        = SELF.R7[(Long, Long)].get                     
-    val bankFee: (Long, Long)       = SELF.R8[(Long, Long)].get
+    val devFeeNum: Long             = SELF.R7[Long].get                     
+    val bankFeeNum: Long            = SELF.R8[Long].get
+    vaL feeDenom: Long              = 1000L
     
     // Bank Input
     val reserveIn: Long         = SELF.value
@@ -54,7 +55,8 @@
 
     // Bank Info
     val hodlCoinsCircDelta: Long    = hodlCoinsIn - hodlCoinsOut // When minting hodlCoin, this is the amount of coins the buyer gets.
-    val price: Long                 = (reserveIn * precisionFactor) / hodlCoinsCircIn
+    //val price: Long                 = (reserveIn * precisionFactor) / hodlCoinsCircIn
+    val pricePrime: Long            = (reserveIn * precisionFactor)
     val isMintTx: Boolean           = (hodlCoinsCircDelta > 0L)
     
     val validBankRecreation: Boolean = {
@@ -83,8 +85,8 @@
                 (bankBoxOUT.R4[Long].get == SELF.R4[Long].get),
                 (bankBoxOUT.R5[Long].get == SELF.R5[Long].get),
                 (bankBoxOUT.R6[Long].get == SELF.R6[Long].get),
-                (bankBoxOUT.R7[(Long, Long)].get == SELF.R7[(Long, Long)].get),
-                (bankBoxOUT.R8[(Long, Long)].get == SELF.R8[(Long, Long)].get)
+                (bankBoxOUT.R7[Long].get == SELF.R7[Long].get),
+                (bankBoxOUT.R8[Long].get == SELF.R8[Long].get)
             ))
 
         }
@@ -103,9 +105,11 @@
         // ===== Mint Tx ===== //
         val validMintTx: Boolean = {
 
-            val expectedAmountDeposited: Long = (hodlCoinsCircDelta * price) / precisionFactor // Price of hodlCoin in nanoERG.
+            //val expectedAmountDeposited: Long = (hodlCoinsCircDelta * price) / precisionFactor // Price of hodlCoin in nanoERG.
+            val expectedAmountDepositedPrime: Long = (hodlCoinsCircDelta * pricePrime)
 
-            val validBankDeposit: Boolean = (reserveOut == reserveIn + expectedAmountDeposited)
+            //val validBankDeposit: Boolean = (reserveOut >= reserveIn + expectedAmountDeposited)
+            val validBankDeposit: Boolean = (reserveOut * (precisionFactor * hodlCoinsCircIn) >= reserveIn * (precisionFactor * hodlCoinsCircIn) + expectedAmountDepositedPrime)
 
             allOf(Coll(
                 validBankRecreation,
@@ -113,25 +117,36 @@
             ))
 
         }
+
+        sigmaProp(validMintTx)
     
     } else {
 
         // ===== Burn Tx ===== //
         val validBurnTx: Boolean = {
 
+            // Outputs
+            val phoenixFeeBoxOUT: Box = OUTPUTS(2)
+
             val hodlCoinsBurned: Long = hodlCoinsOut - hodlCoinsIn
-            val expectedAmountBeforeFees: Long = (hodlCoinsBurned * price) / precisionFactor
-            val bankFeeAmount: Long = (expectedAmountBeforeFees * bankFee._1) / bankFee._2
-            val devFeeAmount: Long = (expectedAmountBeforeFees * devFee._1) / devFee._2
-            val expectedAmountWithdrawn: Long = expectedAmountBeforeFees - bankFeeAmount - devFeeAmount // The buyer never gets the bankFeeAmount since it remains in the bank box, the devFeeAmount is the only ERG that leaves the box.
-            
-            val validBankWithdraw: Boolean = (reserveOut == reserveIn - (expectedAmountBeforeFees - devFeeAmount))
+            //val expectedAmountBeforeFees: Long = (hodlCoinsBurned * price) / precisionFactor
+            val expectedAmountBeforeFeesPrime: Long = (hodlCoinsBurned * price)
+            //val bankFeeAmount: Long = (expectedAmountBeforeFees * bankFeeNum) / feeDenom
+            val bankFeeAmountPrime: Long = (expectedAmountBeforeFeesPrime * bankFeeNum)
+            //val devFeeAmount: Long = (expectedAmountBeforeFees * devFeeNum) / feeDenom
+            val devFeeAmountPrime: Long = (expectedAmountBeforeFeesPrime * devFeeNum)
+            //val expectedAmountWithdrawn: Long = expectedAmountBeforeFees - bankFeeAmount - devFeeAmount // The buyer never gets the bankFeeAmount since it remains in the bank box, the devFeeAmount is the only ERG that leaves the box.
+            val expectedAmountWithdrawnPrime: Long = expectedAmountBeforeFeesPrime * feeDenom - (bankFeeAmountPrime - devFeeAmountPrime) * precisionFactor
+
+            //val validBankWithdraw: Boolean = (reserveOut == reserveIn - (expectedAmountBeforeFees - devFeeAmount))
+            val validBankWithdraw: Boolean = (reserveOut * (precisionFactor * feeDenom) == reserveIn * (precisionFactor * feeDenom) - (expectedAmountBeforeFeesPrime * feeDenom - devFeeAmountPrime * precisionFactor))
 
             val validPhoenixFee: Boolean = {
 
                 allOf(Coll(
-                    (phoenixFeeBoxOUT.value == devFeeAmount),
-                    (phoenixFeeBoxOUT.propositionBytes == $phoenixFeeContractBytes)
+                    //(phoenixFeeBoxOUT.value == devFeeAmount),
+                    (phoenixFeeBoxOUT.value * feeDenom == devFeeAmountPrime),
+                    (blake2b256(phoenixFeeBoxOUT.propositionBytes) == fromBase64($phoenixFeeContractBytesHash))
                 ))
 
             }
