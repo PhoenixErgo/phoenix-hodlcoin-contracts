@@ -55,8 +55,7 @@
 
     // Bank Info
     val hodlCoinsCircDelta: Long    = hodlCoinsIn - hodlCoinsOut // When minting hodlCoin, this is the amount of coins the buyer gets.
-    //val price: Long                 = (reserveIn * precisionFactor) / hodlCoinsCircIn
-    val pricePrime: Long            = (reserveIn * precisionFactor)
+    val price: Long                 = (reserveIn.toBigInt * precisionFactor) / hodlCoinsCircIn
     val isMintTx: Boolean           = (hodlCoinsCircDelta > 0L)
     
     val validBankRecreation: Boolean = {
@@ -85,8 +84,8 @@
                 (bankBoxOUT.R4[Long].get == SELF.R4[Long].get),
                 (bankBoxOUT.R5[Long].get == SELF.R5[Long].get),
                 (bankBoxOUT.R6[Long].get == SELF.R6[Long].get),
-                (bankBoxOUT.R7[Long].get == SELF.R7[Long].get),
-                (bankBoxOUT.R8[Long].get == SELF.R8[Long].get)
+                (bankBoxOUT.R7[(Long, Long)].get == SELF.R7[(Long, Long)].get),
+                (bankBoxOUT.R8[(Long, Long)].get == SELF.R8[(Long, Long)].get)
             ))
 
         }
@@ -105,11 +104,9 @@
         // ===== Mint Tx ===== //
         val validMintTx: Boolean = {
 
-            //val expectedAmountDeposited: Long = (hodlCoinsCircDelta * price) / precisionFactor // Price of hodlCoin in nanoERG.
-            val expectedAmountDepositedPrime: Long = (hodlCoinsCircDelta * pricePrime)
+            val expectedAmountDeposited: Long = (hodlCoinsCircDelta * price) / precisionFactor // Price of hodlCoin in nanoERG.
 
-            //val validBankDeposit: Boolean = (reserveOut >= reserveIn + expectedAmountDeposited)
-            val validBankDeposit: Boolean = (reserveOut * (precisionFactor * hodlCoinsCircIn) >= reserveIn * (precisionFactor * hodlCoinsCircIn) + expectedAmountDepositedPrime)
+            val validBankDeposit: Boolean = (reserveOut >= reserveIn + expectedAmountDeposited)
 
             allOf(Coll(
                 validBankRecreation,
@@ -129,23 +126,17 @@
             val phoenixFeeBoxOUT: Box = OUTPUTS(2)
 
             val hodlCoinsBurned: Long = hodlCoinsOut - hodlCoinsIn
-            //val expectedAmountBeforeFees: Long = (hodlCoinsBurned * price) / precisionFactor
-            val expectedAmountBeforeFeesPrime: Long = (hodlCoinsBurned * price)
-            //val bankFeeAmount: Long = (expectedAmountBeforeFees * bankFeeNum) / feeDenom
-            val bankFeeAmountPrime: Long = (expectedAmountBeforeFeesPrime * bankFeeNum)
-            //val devFeeAmount: Long = (expectedAmountBeforeFees * devFeeNum) / feeDenom
-            val devFeeAmountPrime: Long = (expectedAmountBeforeFeesPrime * devFeeNum)
-            //val expectedAmountWithdrawn: Long = expectedAmountBeforeFees - bankFeeAmount - devFeeAmount // The buyer never gets the bankFeeAmount since it remains in the bank box, the devFeeAmount is the only ERG that leaves the box.
-            val expectedAmountWithdrawnPrime: Long = expectedAmountBeforeFeesPrime * feeDenom - (bankFeeAmountPrime - devFeeAmountPrime) * precisionFactor
-
-            //val validBankWithdraw: Boolean = (reserveOut == reserveIn - (expectedAmountBeforeFees - devFeeAmount))
-            val validBankWithdraw: Boolean = (reserveOut * (precisionFactor * feeDenom) == reserveIn * (precisionFactor * feeDenom) - (expectedAmountBeforeFeesPrime * feeDenom - devFeeAmountPrime * precisionFactor))
+            val expectedAmountBeforeFees: Long = (hodlCoinsBurned * price) / precisionFactor
+            val bankFeeAmount: Long = (expectedAmountBeforeFees * bankFeeNum) / feeDenom
+            val devFeeAmount: Long = (expectedAmountBeforeFees * devFeeNum) / feeDenom
+            val expectedUserAmount: Long = expectedAmountBeforeFees - bankFeeAmount - devFeeAmount // The buyer never gets the bankFeeAmount since it remains in the bank box.
+            
+            val validBankWithdraw: Boolean = (reserveOut == reserveIn - expectedUserAmount + bankFeeAmount) // What should have left the bank is the amount the user got plus the bank fee amount which must remain in the bank.
 
             val validPhoenixFee: Boolean = {
 
                 allOf(Coll(
-                    //(phoenixFeeBoxOUT.value == devFeeAmount),
-                    (phoenixFeeBoxOUT.value * feeDenom == devFeeAmountPrime),
+                    (phoenixFeeBoxOUT.value == devFeeAmount),
                     (blake2b256(phoenixFeeBoxOUT.propositionBytes) == fromBase64($phoenixFeeContractBytesHash))
                 ))
 
@@ -153,7 +144,8 @@
 
             allOf(Coll(
                 validBankRecreation,
-                validBankWithdraw
+                validBankWithdraw,
+                validPhoenixFee
             ))
 
         }
