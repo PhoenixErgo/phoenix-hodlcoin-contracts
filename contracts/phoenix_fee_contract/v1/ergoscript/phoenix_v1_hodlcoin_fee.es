@@ -61,7 +61,7 @@
                 (dev1BoxOUT.value == devAllocation),
                 (dev1BoxOUT.propositionBytes == dev1Address.propBytes),
                 (dev2BoxOUT.value == devAllocation),
-                (dev2BoxOUT.propositionBytes = dev2Address.propBytes),
+                (dev2BoxOUT.propositionBytes == dev2Address.propBytes),
                 (dev3BoxOUT.value == devAllocation),
                 (dev3BoxOUT.propositionBytes == dev3Address.propBytes)
             ))
@@ -81,7 +81,7 @@
 
             allOf(Coll(
                 (minerFeeBoxOUT.value >= $minerFee), // In case the miner fee increases in the future
-                (minerFeeBoxOUT.propositionBytes = minerFeeErgoTreeBytes)
+                (minerFeeBoxOUT.propositionBytes == minerFeeErgoTreeBytes)
             ))
 
         }
