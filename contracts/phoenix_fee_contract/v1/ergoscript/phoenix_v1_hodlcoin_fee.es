@@ -98,6 +98,6 @@
 
     }
 
-    sigmaProp(validFeeDistributionTx) && atLeast(1, Coll(dev1Address, dev2Address, dev3Address, phoenixAddress))
+    sigmaProp(validFeeDistributionTx) && atLeast(1, Coll(dev1Address, dev2Address, dev3Address, phoenixAddress)) // Done so we are incentivized to not spam the miner fee.
 
 }
