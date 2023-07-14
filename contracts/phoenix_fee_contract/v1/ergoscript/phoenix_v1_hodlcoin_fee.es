@@ -28,11 +28,11 @@
     // None
 
     // ===== Relevant Variables ===== //
-    val dev1Address: SigmaProp              = PK("9hHondX3uZMY2wQsXuCGjbgZUqunQyZCNNuwGu6rL7AJC8dhRGa")
-    val dev2Address: SigmaProp              = PK("9gnBtmSRBMaNTkLQUABoAqmU2wzn27hgqVvezAC9SU1VqFKZCp8")
-    val dev3Address: SigmaProp              = PK("9iE2MadGSrn1ivHmRZJWRxzHffuAk6bPmEv6uJmPHuadBY8td5u")
-    val phoenixAddress: SigmaProp           = PK("9iPs1ujGj2eKXVg82aGyAtUtQZQWxFaki48KFixoaNmUAoTY6wV")
-    val minerFeeErgoTreeBytes: Coll[Byte]   = fromBase16("1005040004000e36100204a00b08cd0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798ea02d192a39a8cc7a701730073011001020402d19683030193a38cc7b2a57300000193c2b2a57301007473027303830108cdeeac93b1a57304")
+    val dev1Address: SigmaProp                  = PK("9hHondX3uZMY2wQsXuCGjbgZUqunQyZCNNuwGu6rL7AJC8dhRGa")
+    val dev2Address: SigmaProp                  = PK("9gnBtmSRBMaNTkLQUABoAqmU2wzn27hgqVvezAC9SU1VqFKZCp8")
+    val dev3Address: SigmaProp                  = PK("9iE2MadGSrn1ivHmRZJWRxzHffuAk6bPmEv6uJmPHuadBY8td5u")
+    val phoenixAddress: SigmaProp               = PK("9iPs1ujGj2eKXVg82aGyAtUtQZQWxFaki48KFixoaNmUAoTY6wV")
+    val minerFeeErgoTreeBytesHash: Coll[Byte]   = fromBase16("2b9e147dda83b66925c7718dd40f7df43482e1689ce53363923b2fe3908952a9")
 
     // ===== Fee Distribution Tx ===== //
     val validFeeDistributionTx: Boolean = {
@@ -49,13 +49,13 @@
 
         val validPercentages: Boolean = {
 
-            (devPercentage._1 * phoenixPercentage._2 + phoenixPercentage._1 * devPercentage._2) == (devPercentage._2 * phoenixPercentage._2) // (a/b + c/d = 1 => ad + cb = bd)
+            ($devPercentage._1 * $phoenixPercentage._2 + $phoenixPercentage._1 * $devPercentage._2) == ($devPercentage._2 * $phoenixPercentage._2) // (a/b + c/d = 1 => ad + cb = bd)
 
         }
 
         val validDevBoxes: Boolean = {
 
-            val devAllocation: Long = ((devPercentage._1 * devAmount) / devPercentage._2) / 3L
+            val devAllocation: Long = (($devPercentage._1 * devAmount) / $devPercentage._2) / 3L
 
             allOf(Coll(
                 (dev1BoxOUT.value == devAllocation),
@@ -71,7 +71,7 @@
         val validPhoenixBox: Boolean = {
 
             allOf(Coll(
-                (phoenixBoxOUT.value == (phoenixPercentage._1 * devAmount) / phoenixPercentage._2),
+                (phoenixBoxOUT.value == ($phoenixPercentage._1 * devAmount) / $phoenixPercentage._2),
                 (phoenixBoxOUT.propositionBytes == phoenixAddress.propBytes)
             ))
 
@@ -81,7 +81,7 @@
 
             allOf(Coll(
                 (minerFeeBoxOUT.value >= $minerFee), // In case the miner fee increases in the future
-                (minerFeeBoxOUT.propositionBytes == minerFeeErgoTreeBytes)
+                (blake2b256(minerFeeBoxOUT.propositionBytes) == minerFeeErgoTreeBytesHash)
             ))
 
         }
