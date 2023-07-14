@@ -41,14 +41,14 @@
     // None
 
     // ===== Relevant Variables ===== //
-    val buyerPK: SigmaProp                  = SELF.R4[SigmaProp].get
-    val bankSingletonTokenId: Coll[Byte]    = SELF.R5[Coll[Byte]].get
-    val hodlCoinTokenId: Coll[Byte]         = SELF.R6[Coll[Byte]].get
-    val minBoxValue: Long                   = SELF.R7[Long].get
-    val minTxOperatorFee: Long              = SELF.R8[Long].get
-    val minerFee: Long                      = SELF.R9[Long].get
+    val buyerPK: SigmaProp                      = SELF.R4[SigmaProp].get
+    val bankSingletonTokenId: Coll[Byte]        = SELF.R5[Coll[Byte]].get
+    val hodlCoinTokenId: Coll[Byte]             = SELF.R6[Coll[Byte]].get
+    val minBoxValue: Long                       = SELF.R7[Long].get
+    val minTxOperatorFee: Long                  = SELF.R8[Long].get
+    val minerFee: Long                          = SELF.R9[Long].get
     val minerFeeErgoTreeBytesHash: Coll[Byte]   = fromBase16("2b9e147dda83b66925c7718dd40f7df43482e1689ce53363923b2fe3908952a9")
-    val isValidBank: Boolean                = (INPUTS(0).tokens(0)._1 == bankSingletonTokenId) && (INPUTS(0).tokens(1)._1 == hodlCoinTokenId)
+    val isValidBank: Boolean                    = (INPUTS(0).tokens(0)._1 == bankSingletonTokenId) && (INPUTS(0).tokens(1)._1 == hodlCoinTokenId)
 
     if (isValidBank) {
 
