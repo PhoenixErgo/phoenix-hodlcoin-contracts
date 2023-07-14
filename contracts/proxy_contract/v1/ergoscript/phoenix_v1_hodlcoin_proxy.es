@@ -47,7 +47,7 @@
     val minBoxValue: Long                   = SELF.R7[Long].get
     val minTxOperatorFee: Long              = SELF.R8[Long].get
     val minerFee: Long                      = SELF.R9[Long].get
-    val minerFeeErgoTreeBytes: Coll[Byte]   = fromBase16("1005040004000e36100204a00b08cd0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798ea02d192a39a8cc7a701730073011001020402d19683030193a38cc7b2a57300000193c2b2a57301007473027303830108cdeeac93b1a57304")
+    val minerFeeErgoTreeBytesHash: Coll[Byte]   = fromBase16("2b9e147dda83b66925c7718dd40f7df43482e1689ce53363923b2fe3908952a9")
     val isValidBank: Boolean                = (INPUTS(0).tokens(0)._1 == bankSingletonTokenId) && (INPUTS(0).tokens(1)._1 == hodlCoinTokenId)
 
     if (isValidBank) {
@@ -106,7 +106,7 @@
 
                     allOf(Coll(
                         (minerFeeBoxOUT.value == minerFee),
-                        (minerFeeBoxOUT.propositionBytes == minerFeeErgoTreeBytes)
+                        (blake2b256(minerFeeBoxOUT.propositionBytes) == minerFeeErgoTreeBytesHash)
                     ))
 
                 }
@@ -161,7 +161,7 @@
 
                     allOf(Coll(
                         (minerFeeBoxOUT.value == minerFee),
-                        (minerFeeBoxOUT.propositionBytes == minerFeeErgoTreeBytes)
+                        (blake2b256(minerFeeBoxOUT.propositionBytes) == minerFeeErgoTreeBytesHash)
                     ))
 
                 }
@@ -207,7 +207,7 @@
 
                 allOf(Coll(
                     (minerFeeBoxOUT.value == minerFee),
-                    (minerFeeBoxOUT.propositionBytes == minerFeeErgoTreeBytes)
+                    (blake2b256(minerFeeBoxOUT.propositionBytes) == minerFeeErgoTreeBytesHash)
                 ))
 
             }
