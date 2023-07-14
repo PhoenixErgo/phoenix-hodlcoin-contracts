@@ -166,6 +166,8 @@
 
                 }
 
+                val validTxOperatorFee: Boolean = (txOperatorFeeBoxOUT.value >= minTxOperatorFee)
+
                 val validOutputSize: Boolean = (OUTPUTS.size == 5)
 
                 allOf(Coll(
