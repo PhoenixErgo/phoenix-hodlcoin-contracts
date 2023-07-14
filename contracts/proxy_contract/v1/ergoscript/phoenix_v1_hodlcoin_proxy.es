@@ -69,7 +69,7 @@
 
         // Bank Info
         val hodlCoinsCircDelta: Long    = hodlCoinsIn - hodlCoinsOut
-        val price: Long                 = (reserveIn * precisionFactor) / hodlCoinsCircIn 
+        val price: Long                 = (reserveIn.toBigInt * precisionFactor) / hodlCoinsCircIn 
         val isMintTx: Boolean           = (hodlCoinsCircDelta > 0L)
 
         // Outputs
