@@ -5,7 +5,7 @@
     // Description: Contract for the bank box of the HodlCoin protocol.
     // Version: 1.0.0
     // Author: Luca D'Angelo (ldgaetano@protonmail.com), MGPai
-    
+
     // ===== Box Contents ===== //
     // Tokens
     // 1. (BankSingletonId, 1)
@@ -16,7 +16,7 @@
     // R6: Long             MinBankValue
     // R7: Long             BankFeeNum
     // R8: Long             DevFeeNum
-    
+
     // ===== Relevant Transactions ===== //
     // 1. Mint Tx
     // Inputs: Bank, Proxy
@@ -39,10 +39,10 @@
     val totalTokenSupply: Long      = SELF.R4[Long].get
     val precisionFactor: Long       = SELF.R5[Long].get
     val minBankValue: Long          = SELF.R6[Long].get
-    val devFeeNum: Long             = SELF.R7[Long].get                     
+    val devFeeNum: Long             = SELF.R7[Long].get
     val bankFeeNum: Long            = SELF.R8[Long].get
-    vaL feeDenom: Long              = 1000L
-    
+    val feeDenom: Long              = 1000L
+
     // Bank Input
     val reserveIn: Long         = SELF.value
     val hodlCoinsIn: Long       = SELF.tokens(1)._2               // hodlERG token amount in the bank box.
@@ -57,7 +57,7 @@
     val hodlCoinsCircDelta: Long    = hodlCoinsIn - hodlCoinsOut // When minting hodlCoin, this is the amount of coins the buyer gets.
     val price: Long                 = (reserveIn.toBigInt * precisionFactor) / hodlCoinsCircIn
     val isMintTx: Boolean           = (hodlCoinsCircDelta > 0L)
-    
+
     val validBankRecreation: Boolean = {
 
         val validValue: Boolean = (bankBoxOUT.value >= minBankValue) // There must be at least 1 ERG always in the box
@@ -116,7 +116,7 @@
         }
 
         sigmaProp(validMintTx)
-    
+
     } else {
 
         // ===== Burn Tx ===== //
@@ -130,14 +130,14 @@
             val bankFeeAmount: Long = (expectedAmountBeforeFees * bankFeeNum) / feeDenom
             val devFeeAmount: Long = (expectedAmountBeforeFees * devFeeNum) / feeDenom
             val expectedUserAmount: Long = expectedAmountBeforeFees - bankFeeAmount - devFeeAmount // The buyer never gets the bankFeeAmount since it remains in the bank box.
-            
+
             val validBankWithdraw: Boolean = (reserveOut == reserveIn - expectedUserAmount + bankFeeAmount) // What should have left the bank is the amount the user got plus the bank fee amount which must remain in the bank.
 
             val validPhoenixFee: Boolean = {
 
                 allOf(Coll(
                     (phoenixFeeBoxOUT.value == devFeeAmount),
-                    (blake2b256(phoenixFeeBoxOUT.propositionBytes) == fromBase64($phoenixFeeContractBytesHash))
+                    (blake2b256(phoenixFeeBoxOUT.propositionBytes) == $phoenixFeeContractBytesHash)
                 ))
 
             }
