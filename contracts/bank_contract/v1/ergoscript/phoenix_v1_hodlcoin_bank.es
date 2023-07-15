@@ -84,8 +84,8 @@
                 (bankBoxOUT.R4[Long].get == SELF.R4[Long].get),
                 (bankBoxOUT.R5[Long].get == SELF.R5[Long].get),
                 (bankBoxOUT.R6[Long].get == SELF.R6[Long].get),
-                (bankBoxOUT.R7[(Long, Long)].get == SELF.R7[(Long, Long)].get),
-                (bankBoxOUT.R8[(Long, Long)].get == SELF.R8[(Long, Long)].get)
+                (bankBoxOUT.R7[Long].get == SELF.R7[Long].get),
+                (bankBoxOUT.R8[Long].get == SELF.R8[Long].get)
             ))
 
         }
