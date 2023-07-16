@@ -14,23 +14,26 @@ Tokens
 2. (HodlCoinTokenId, HodlCoinTokenAmount)
 
 Registers
-- None
+- R4: Long          TotalTokenSupply
+- R5: Long          PrecisionFactor
+- R6: Long          MinBankValue
+- R7: Long          BankFeeNum 
+- R8: Long          DevFeeNum
 
 ### Relevant Transactions
 1. Mint Tx
 - Inputs: Bank, Proxy
 - DataInputs: None
-- Outputs: Bank, UserPK, MinerFee, TxOperatorFee
+- Outputs: Bank, BuyerPK, MinerFee, TxOperatorFee
 - Context Variables: None
 2. Burn Tx
 - Inputs: Bank, Proxy
 - DataInputs: None
-- Outputs: Bank, UserPK, PhoenixFee, MinerFee, TxOperatorFee
+- Outputs: Bank, BuyerPK, PhoenixFee, MinerFee, TxOperatorFee
 - ContextVariables: None
 
 ### Compile Time Constants ($)
-- $phoenixFeeContractBytes: Coll[Byte]
-- $minTxOperatorFee: Long
+- $phoenixFeeContractBytesHash: Coll[Byte]
 
 ### Context Variables (@)
 - None

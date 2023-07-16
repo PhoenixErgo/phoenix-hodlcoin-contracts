@@ -9,7 +9,8 @@ ErgoScript contracts for the Phoenix implementation of HodlCoin.
 ## Transactions
 1. Mint Tx
 2. Burn Tx
-3. Fee Distribution Tx
+3. Refund Tx
+4. Fee Distribution Tx
 
 ## Protocol Diagrams
 ![Image](docs/Phoenix%20Hodl%20Coin%20Protocol%20Diagrams.png)

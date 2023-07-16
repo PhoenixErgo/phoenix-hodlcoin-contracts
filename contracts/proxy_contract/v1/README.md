@@ -10,25 +10,32 @@ Contract guarding the proxy box of the HodlCoin protocol.
 
 ### Box Contents
 Tokens
-- (HodlCoinTokenId, HodlCoinTokenAmount)
+- (HodlCoinTokenId, HodlCoinTokenAmount) if burning hodlCoin tokens.
 
 Registers
-- R4: SigmaProp     UserPK
-- R5: Long          MinBoxValue
-- R6: Long          MinerFee
-- R7: Coll[Byte]    BankSingletonTokenId
+- R4: SigmaProp     BuyerPK
+- R5: Coll[Byte]    BankSingletonTokenId
+- R6: Coll[Byte]    HodlCoinTokenId
+- R7: Long          MinBoxValue
+- R8: Long          MinTxOperatorFee
+- R9: Long          MinerFee
 
 ### Relevant Transactions
 1. Mint Tx
 - Inputs: Bank, Proxy
-- DataInputs: None
-- Outputs: Bank, UserPK, MinerFee, TxOperatorFee
+- Data Inputs: None
+- Outputs: Bank, BuyerPK, MinerFee, TxOperatorFee
 - Context Variables: None
 2. Burn Tx
 - Inputs: Bank, Proxy
-- DataInputs: None
-- Outputs: Bank, UserPK, PhoenixFee, MinerFee, TxOperatorFee
-- ContextVariables: None
+- Data Inputs: None
+- Outputs: Bank, BuyerPK, PhoenixFee, MinerFee, TxOperatorFee
+- Context Variables: None
+3. Refund Tx
+- Inputs: Proxy
+- Data Inputs: None
+- Outputs: BuyerPK, MinerFee
+- Context Variables: None
 
 ### Compile Time Constants ($)
 - None
