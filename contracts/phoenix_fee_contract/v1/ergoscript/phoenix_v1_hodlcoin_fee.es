@@ -25,8 +25,9 @@
     // ===== Context Variables (@) ===== //
     // None
 
-    val devPercentage: (Long, Long) = (60L, 100L)
-    val phoenixPercentage: (Long, Long) = (40L, 100L)
+    val feeDenom = 100L
+    val devPercentageNum: Long = 60L
+    val phoenixPercentageNum: Long = 40L
 
     // ===== Relevant Variables ===== //
     val dev1Address: SigmaProp                  = PK("9hHondX3uZMY2wQsXuCGjbgZUqunQyZCNNuwGu6rL7AJC8dhRGa")
@@ -50,13 +51,13 @@
 
         val validPercentages: Boolean = {
 
-            (devPercentage._1 * phoenixPercentage._2 + phoenixPercentage._1 * devPercentage._2) == (devPercentage._2 * phoenixPercentage._2) // (a/b + c/d = 1 => ad + cb = bd)
+            (devPercentageNum._1 * feeDenom + phoenixPercentageNum * feeDenom) == (feeDenom * feeDenom) // (a/b + c/d = 1 => ad + cb = bd)
 
         }
 
         val validDevBoxes: Boolean = {
 
-            val devAllocation: Long = ((devPercentage._1 * devAmount) / devPercentage._2) / 3L
+            val devAllocation: Long = ((devPercentageNum * devAmount) / feeDenom) / 3L
 
             allOf(Coll(
                 (dev1BoxOUT.value == devAllocation),
@@ -72,7 +73,7 @@
         val validPhoenixBox: Boolean = {
 
             allOf(Coll(
-                (phoenixBoxOUT.value == (phoenixPercentage._1 * devAmount) / phoenixPercentage._2),
+                (phoenixBoxOUT.value == (phoenixPercentageNum * devAmount) / feeDenom),
                 (phoenixBoxOUT.propositionBytes == phoenixAddress.propBytes)
             ))
 
