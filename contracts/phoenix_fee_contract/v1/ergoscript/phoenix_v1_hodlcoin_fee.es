@@ -56,7 +56,7 @@
         }
 
         val validMinAmount: Boolean = {
-            outputAmount >= 1000000L // this prevents dust transactions
+            outputAmount >= 3000000L // this prevents dust transactions
         }
 
         val validDevBoxes: Boolean = {
