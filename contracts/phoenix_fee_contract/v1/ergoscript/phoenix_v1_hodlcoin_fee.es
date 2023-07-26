@@ -20,19 +20,21 @@
     // Context Variables: None
 
     // ===== Compile Time Constants ($) ===== //
-    // $devPercentage: (Long, Long)
-    // $phoenixPercentage: (Long, Long)
     // $minerFee: Long
-  
+
     // ===== Context Variables (@) ===== //
     // None
+
+    val feeDenom = 100L
+    val devPercentageNum: Long = 60L
+    val phoenixPercentageNum: Long = 40L
 
     // ===== Relevant Variables ===== //
     val dev1Address: SigmaProp                  = PK("9hHondX3uZMY2wQsXuCGjbgZUqunQyZCNNuwGu6rL7AJC8dhRGa")
     val dev2Address: SigmaProp                  = PK("9gnBtmSRBMaNTkLQUABoAqmU2wzn27hgqVvezAC9SU1VqFKZCp8")
     val dev3Address: SigmaProp                  = PK("9iE2MadGSrn1ivHmRZJWRxzHffuAk6bPmEv6uJmPHuadBY8td5u")
     val phoenixAddress: SigmaProp               = PK("9iPs1ujGj2eKXVg82aGyAtUtQZQWxFaki48KFixoaNmUAoTY6wV")
-    val minerFeeErgoTreeBytesHash: Coll[Byte]   = fromBase16("2b9e147dda83b66925c7718dd40f7df43482e1689ce53363923b2fe3908952a9")
+    val minerFeeErgoTreeBytesHash: Coll[Byte]   = fromBase16("e540cceffd3b8dd0f401193576cc413467039695969427df94454193dddfb375")
 
     // ===== Fee Distribution Tx ===== //
     val validFeeDistributionTx: Boolean = {
@@ -49,13 +51,17 @@
 
         val validPercentages: Boolean = {
 
-            ($devPercentage._1 * $phoenixPercentage._2 + $phoenixPercentage._1 * $devPercentage._2) == ($devPercentage._2 * $phoenixPercentage._2) // (a/b + c/d = 1 => ad + cb = bd)
+            (devPercentageNum * feeDenom + phoenixPercentageNum * feeDenom) == (feeDenom * feeDenom) // (a/b + c/d = 1 => ad + cb = bd)
 
+        }
+
+        val validMinAmount: Boolean = {
+            outputAmount >= 3000000L // this prevents dust transactions
         }
 
         val validDevBoxes: Boolean = {
 
-            val devAllocation: Long = (($devPercentage._1 * devAmount) / $devPercentage._2) / 3L
+            val devAllocation: Long = ((devPercentageNum * devAmount) / feeDenom) / 3L
 
             allOf(Coll(
                 (dev1BoxOUT.value == devAllocation),
@@ -71,7 +77,7 @@
         val validPhoenixBox: Boolean = {
 
             allOf(Coll(
-                (phoenixBoxOUT.value == ($phoenixPercentage._1 * devAmount) / $phoenixPercentage._2),
+                (phoenixBoxOUT.value == (phoenixPercentageNum * devAmount) / feeDenom),
                 (phoenixBoxOUT.propositionBytes == phoenixAddress.propBytes)
             ))
 
@@ -91,6 +97,7 @@
         allOf(Coll(
             validPercentages,
             validDevBoxes,
+            validMinAmount,
             validPhoenixBox,
             validMinerFee,
             validOutputSize
