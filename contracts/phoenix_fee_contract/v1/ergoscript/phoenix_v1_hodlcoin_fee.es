@@ -55,6 +55,10 @@
 
         }
 
+        val validMinAmount: Boolean = {
+            outputAmount >= 1000000L // this prevents dust transactions
+        }
+
         val validDevBoxes: Boolean = {
 
             val devAllocation: Long = ((devPercentageNum * devAmount) / feeDenom) / 3L
@@ -93,6 +97,7 @@
         allOf(Coll(
             validPercentages,
             validDevBoxes,
+            validMinAmount,
             validPhoenixBox,
             validMinerFee,
             validOutputSize
