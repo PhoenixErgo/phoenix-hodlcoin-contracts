@@ -111,11 +111,11 @@
 
             val expectedAmountDeposited: Long = (hodlCoinsCircDelta * price) / precisionFactor // Price of hodlCoin in nanoERG.
 
-            val validBankDeposit: Boolean = (reserveOut >= reserveIn + expectedAmountDeposited)
+            val validTokenDeposit: Boolean = (reserveOut >= reserveIn + expectedAmountDeposited)
 
             allOf(Coll(
                 validBankRecreation,
-                validBankDeposit
+                validTokenDeposit
             ))
 
         }

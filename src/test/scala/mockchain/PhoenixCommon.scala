@@ -38,6 +38,10 @@ trait PhoenixCommon extends HttpClientTesting {
   val hodlBankNft =
     "2bbabc2be7292e2e857a1f2c34a8b0c090de2f30fa44c68ab71454e5586bd45e"
 
+  // for hodlToken (e.g. hodlComet) contracts
+  val tokenId =
+    "2ababc2be7292e2e857a1f2c34a8b0c090de2f30fa44c68ab71454e5586bd45e"
+
   val userAddress: Address =
     Address.create("9eiuh5bJtw9oWDVcfJnwTm1EHfK5949MEm5DStc2sD1TLwDSrpx")
 
@@ -47,6 +51,12 @@ trait PhoenixCommon extends HttpClientTesting {
   val phoenixScript: String =
     PhoenixContracts.phoenix_v1_hodlcoin_bank.contractScript
 
+  val feeScriptToken: String =
+    PhoenixContracts.phoenix_v1_hodlcoin_feeTest_token.contractScript
+
+  val phoenixScriptToken: String =
+    PhoenixContracts.phoenix_v1_hodlcoin_bank_token.contractScript
+
   val feeContract: ErgoContract = compiler.compileFeeContract(
     feeScript,
     minMinerFeeNanoErg
@@ -54,6 +64,14 @@ trait PhoenixCommon extends HttpClientTesting {
 
   val phoenixContract: ErgoContract =
     compiler.compileBankContract(phoenixScript, feeContract)
+
+  val feeContractToken: ErgoContract = compiler.compileFeeContract(
+    feeScriptToken,
+    minMinerFeeNanoErg
+  )
+
+  val phoenixContractToken: ErgoContract =
+    compiler.compileBankContract(phoenixScriptToken, feeContract)
 
   val proxyScript: String =
     PhoenixContracts.phoenix_v1_hodlcoin_proxy.contractScript

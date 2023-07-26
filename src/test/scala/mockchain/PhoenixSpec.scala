@@ -1,14 +1,7 @@
 package mockchain
 
-import contracts.PhoenixContracts
-import org.ergoplatform.appkit.{
-  Address,
-  BlockchainContext,
-  ErgoContract,
-  InputBox
-}
-import utils.{ContractCompile, OutBoxes, TransactionHelper}
-import mockClient.{Common, HttpClientTesting}
+
+import mockClient.Common
 import org.ergoplatform.sdk.ErgoToken
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers

@@ -57,8 +57,11 @@ object PhoenixContracts extends Enum[PhoenixContracts] {
   case object phoenix_v1_hodlcoin_bank extends BoxGuardScriptContract
   case object phoenix_v1_hodlcoin_fee extends BoxGuardScriptContract
   case object phoenix_v1_hodlcoin_feeTest extends BoxGuardScriptContract
-  case object phoenix_v1_hodlcoin_proxy
-      extends ProxyContractBoxGuardScriptContract
+  case object phoenix_v1_hodlcoin_proxy extends ProxyContractBoxGuardScriptContract
+  case object phoenix_v1_hodlcoin_bank_token extends TokenScriptContract
+  case object phoenix_v1_hodlcoin_fee_token extends TokenScriptContract
+  case object phoenix_v1_hodlcoin_feeTest_token extends TokenScriptContract
+  case object phoenix_v1_hodlcoin_proxy_token extends TokenScriptContract
 }
 
 sealed trait BoxContract extends PhoenixContracts {
@@ -69,6 +72,9 @@ sealed trait ProxyContract extends PhoenixContracts {
   override val domain: String = "Phoenix"
 }
 
+sealed trait TokenContract extends PhoenixContracts {
+  override val domain: String = "Phoenix"
+}
 //</editor-fold>
 
 //<editor-fold desc="Detailed Contract Types">
@@ -80,6 +86,10 @@ sealed trait BoxGuardScriptContract extends BoxContract {
 
 sealed trait ProxyContractBoxGuardScriptContract extends ProxyContract {
   override val contractType: ContractType = ContractTypes.ProxyContract
+}
+
+sealed trait TokenScriptContract extends TokenContract {
+  override val contractType: ContractType = ContractTypes.TokenScript
 }
 //</editor-fold>
 
@@ -98,6 +108,11 @@ object ContractTypes extends Enum[ContractType] {
   case object BoxGuardScript extends ContractType {
     override val plural = "BoxGuardScripts"
   }
+
+  case object TokenScript extends ContractType {
+    override val plural = "TokenScripts"
+  }
+
   case object None extends ContractType { override val plural = "" }
 }
 
