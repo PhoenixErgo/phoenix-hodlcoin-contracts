@@ -19,11 +19,13 @@ Registers
 1. Fee Distribution Tx
 - Inputs: PhoenixFee1, ... , PhoenixFeeM
 - DataInputs: None
-- Outputs: Dev1PK, Dev2PK, Dev3PK, PhoenixPK
+- Outputs: Dev1PK, Dev2PK, Dev3PK, PhoenixPK, MinerFee
 - Context Variables: None
 
 ### Compile Time Constants ($)
-- None
+- $devPercentage: (Long, Long)
+- $phoenixPercentage: (Long, Long)
+- $minerFee: Long
 
 ### Context Variables (@)
 - None
