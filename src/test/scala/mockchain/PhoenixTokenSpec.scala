@@ -33,7 +33,7 @@ class PhoenixTokenSpec extends AnyFlatSpec
   }
 
 
-  "PhoenixMintOperation" should "work correctly when all conditions are satisfied" in {
+  "PhoenixTokenMintOperation" should "work correctly when all conditions are satisfied" in {
 
     val minAmount = 1000000L
 
@@ -115,6 +115,174 @@ class PhoenixTokenSpec extends AnyFlatSpec
         unsignedTransaction
       )
     }
+  }
+
+  "PhoenixTokenMintOperation" should "fail when more hodl taken" in {
+
+    val minAmount = 1000000L
+
+    val tokenAmount = 10000000 * 1000000000L
+    val hodlErgAmount = totalSupply / 10 * 9
+    val hodlMintAmount = 20
+
+    val hodlSingleton = new ErgoToken(hodlBankNft, 1L)
+    val hodlTokens = new ErgoToken(hodlTokenId, hodlErgAmount)
+    val tokensBefore = new ErgoToken(tokenId, tokenAmount)
+
+    val hodlBox = outBoxObj
+      .hodlBankBox(
+        phoenixContractToken,
+        hodlSingleton,
+        hodlTokens,
+        totalSupply,
+        precisionFactor,
+        minBankValue,
+        bankFee,
+        devFee,
+        minAmount,
+        Some(tokensBefore)
+      )
+      .convertToInputWith(fakeTxId1, fakeIndex)
+
+    val price = hodlTokenPrice(hodlBox)
+
+    require(
+      hodlBox.getTokens.get(2).getValue >= totalSupply - hodlErgAmount,
+      "never-decreasing theorem does not hold"
+    )
+    require(
+      price == 2000000,
+      "Price does not correspond to manually calculated value"
+    )
+
+    val tokenMintAmount = mintAmountToken(hodlBox, hodlMintAmount)
+    require(
+      tokenMintAmount == 40,
+      s"Token ($tokenMintAmount) delta does not correspond to manually calculated value "
+    )
+
+    val fundingBox = outBoxObj
+      .genericContractBox(
+        compiler.compileDummyContract(),
+        fundingBoxValue,
+        Seq(new ErgoToken(tokenId, tokenMintAmount))
+      ).convertToInputWith(fakeTxId1, fakeIndex)
+
+    val tokensAfter = new ErgoToken(tokenId, tokenAmount + tokenMintAmount)
+
+    val hodlOutBox = outBoxObj.hodlBankBox(
+      phoenixContractToken,
+      hodlSingleton,
+      new ErgoToken(hodlTokenId, hodlErgAmount - hodlMintAmount - 1), // <<-- this line has changed
+      totalSupply,
+      precisionFactor,
+      minBankValue,
+      bankFee,
+      devFee,
+      minAmount,
+      Some(tokensAfter)
+    )
+
+    val recipientBox = outBoxObj.hodlMintBox(
+      userAddress,
+      new ErgoToken(hodlTokenId, hodlMintAmount),
+      minAmount
+    )
+
+    val unsignedTransaction = txHelper.buildUnsignedTransaction(
+      inputs = Array(hodlBox, fundingBox),
+      outputs = Array(hodlOutBox, recipientBox)
+    )
+
+    the[Exception] thrownBy {
+      txHelper.signTransaction(
+        unsignedTransaction
+      )
+    } should have message "Script reduced to false"
+  }
+
+  "PhoenixTokenMintOperation" should "fail when less tokens paid" in {
+
+    val minAmount = 1000000L
+
+    val tokenAmount = 10000000 * 1000000000L
+    val hodlErgAmount = totalSupply / 10 * 9
+    val hodlMintAmount = 20
+
+    val hodlSingleton = new ErgoToken(hodlBankNft, 1L)
+    val hodlTokens = new ErgoToken(hodlTokenId, hodlErgAmount)
+    val tokensBefore = new ErgoToken(tokenId, tokenAmount)
+
+    val hodlBox = outBoxObj
+      .hodlBankBox(
+        phoenixContractToken,
+        hodlSingleton,
+        hodlTokens,
+        totalSupply,
+        precisionFactor,
+        minBankValue,
+        bankFee,
+        devFee,
+        minAmount,
+        Some(tokensBefore)
+      )
+      .convertToInputWith(fakeTxId1, fakeIndex)
+
+    val price = hodlTokenPrice(hodlBox)
+
+    require(
+      hodlBox.getTokens.get(2).getValue >= totalSupply - hodlErgAmount,
+      "never-decreasing theorem does not hold"
+    )
+    require(
+      price == 2000000,
+      "Price does not correspond to manually calculated value"
+    )
+
+    val tokenMintAmount = mintAmountToken(hodlBox, hodlMintAmount)
+    require(
+      tokenMintAmount == 40,
+      s"Token ($tokenMintAmount) delta does not correspond to manually calculated value "
+    )
+
+    val fundingBox = outBoxObj
+      .genericContractBox(
+        compiler.compileDummyContract(),
+        fundingBoxValue,
+        Seq(new ErgoToken(tokenId, tokenMintAmount))
+      ).convertToInputWith(fakeTxId1, fakeIndex)
+
+    val tokensAfter = new ErgoToken(tokenId, tokenAmount + tokenMintAmount - 1) // <<-- this line has changed
+
+    val hodlOutBox = outBoxObj.hodlBankBox(
+      phoenixContractToken,
+      hodlSingleton,
+      new ErgoToken(hodlTokenId, hodlErgAmount - hodlMintAmount),
+      totalSupply,
+      precisionFactor,
+      minBankValue,
+      bankFee,
+      devFee,
+      minAmount,
+      Some(tokensAfter)
+    )
+
+    val recipientBox = outBoxObj.hodlMintBox(
+      userAddress,
+      new ErgoToken(hodlTokenId, hodlMintAmount),
+      minAmount
+    )
+
+    val unsignedTransaction = txHelper.buildUnsignedTransaction(
+      inputs = Array(hodlBox, fundingBox),
+      outputs = Array(hodlOutBox, recipientBox)
+    )
+
+    the[Exception] thrownBy {
+      txHelper.signTransaction(
+        unsignedTransaction
+      )
+    } should have message "Script reduced to false"
   }
 
 }
