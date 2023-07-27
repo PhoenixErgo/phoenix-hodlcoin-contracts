@@ -1,6 +1,7 @@
-package mockchain
+package mockchain.token
 
 import mockClient.Common
+import mockchain.PhoenixCommon
 import org.ergoplatform.appkit.InputBox
 import org.ergoplatform.sdk.ErgoToken
 import org.scalatest.flatspec.AnyFlatSpec
@@ -11,6 +12,7 @@ class PhoenixTokenSpec extends AnyFlatSpec
   with Common
   with PhoenixCommon {
 
+  val minAmount = 1000000L
 
   def hodlTokenPrice(hodlBoxIn: InputBox): Long = {
     // preserving terminology from the contract
@@ -32,10 +34,28 @@ class PhoenixTokenSpec extends AnyFlatSpec
     hodlMintAmt * price / precisionFactor
   }
 
+  /** @return amount of (nano) ERGs which can be released to when given amount of hodlcoins burnt to user,
+    *         and also dev fee
+    */
+  def burnTokenAmount(hodlBoxIn: InputBox, hodlBurnAmt: Long): (Long, Long) = {
+    val feeDenom = 1000L
+
+    val bankFee =
+      hodlBoxIn.getRegisters.get(3).getValue.asInstanceOf[Long] // R7
+    val devFee = hodlBoxIn.getRegisters.get(4).getValue.asInstanceOf[Long] // R8
+
+    val price = hodlTokenPrice(hodlBoxIn)
+    val precisionFactor = extractPrecisionFactor(hodlBoxIn)
+    val beforeFees = hodlBurnAmt * price / precisionFactor
+    val bankFeeAmount: Long = (beforeFees * bankFee) / feeDenom
+    val devFeeAmount: Long = (beforeFees * devFee) / feeDenom
+    val expectedAmountWithdrawn: Long =
+      beforeFees - bankFeeAmount - devFeeAmount
+    (expectedAmountWithdrawn, devFeeAmount)
+  }
+
 
   "PhoenixTokenMintOperation" should "work correctly when all conditions are satisfied" in {
-
-    val minAmount = 1000000L
 
     val tokenAmount = 10000000 * 1000000000L
     val hodlErgAmount = totalSupply / 10 * 9
@@ -119,8 +139,6 @@ class PhoenixTokenSpec extends AnyFlatSpec
 
   "PhoenixTokenMintOperation" should "fail when more hodl taken" in {
 
-    val minAmount = 1000000L
-
     val tokenAmount = 10000000 * 1000000000L
     val hodlErgAmount = totalSupply / 10 * 9
     val hodlMintAmount = 20
@@ -203,8 +221,6 @@ class PhoenixTokenSpec extends AnyFlatSpec
 
   "PhoenixTokenMintOperation" should "fail when less tokens paid" in {
 
-    val minAmount = 1000000L
-
     val tokenAmount = 10000000 * 1000000000L
     val hodlErgAmount = totalSupply / 10 * 9
     val hodlMintAmount = 20
@@ -283,6 +299,87 @@ class PhoenixTokenSpec extends AnyFlatSpec
         unsignedTransaction
       )
     } should have message "Script reduced to false"
+  }
+
+  "PhoenixTokenBurnOperation" should "succeed when all conditions are met" in {
+
+    val tokenAmount = 1000 * 1000000000L
+    val hodlTokenAmount = 1000000000L
+
+    val hodlBurnAmount = 20000000
+
+    val hodlSingleton = new ErgoToken(hodlBankNft, 1L)
+    val hodlTokens = new ErgoToken(hodlTokenId, hodlTokenAmount)
+    val tokensBefore = new ErgoToken(tokenId, tokenAmount)
+
+    val hodlBox = outBoxObj
+      .hodlBankBox(
+        phoenixContractToken,
+        hodlSingleton,
+        hodlTokens,
+        totalSupply,
+        precisionFactor,
+        minBankValue,
+        bankFee,
+        devFee,
+        minAmount,
+        Some(tokensBefore)
+      )
+      .convertToInputWith(fakeTxId1, fakeIndex)
+
+    val (userBoxAmount, devFeeAmount) = burnTokenAmount(hodlBox, hodlBurnAmount)
+    println("uba: " + userBoxAmount)
+    println("dfa: " + devFeeAmount)
+
+    val fundingBox = outBoxObj
+      .tokenOutBox(
+        Array(new ErgoToken(hodlTokenId, hodlBurnAmount)),
+        compiler.compileDummyContract().toAddress,
+        fundingBoxValue
+      )
+      .convertToInputWith(fakeTxId1, fakeIndex)
+
+    val tokensAfter = new ErgoToken(tokenId, tokenAmount - userBoxAmount - devFeeAmount)
+
+    val hodlOutBox = outBoxObj.hodlBankBox(
+      phoenixContractToken,
+      hodlSingleton,
+      new ErgoToken(hodlTokenId, hodlTokenAmount + hodlBurnAmount),
+      totalSupply,
+      precisionFactor,
+      minBankValue,
+      bankFee,
+      devFee,
+      minAmount,
+      Some(tokensAfter)
+    )
+
+    val recipientBox = outBoxObj.tokenOutBox(
+      Array(new ErgoToken(tokenId, userBoxAmount)),
+      userAddress,
+      minAmount
+    )
+
+    val devFeeBox =
+      outBoxObj.tokenOutBox(
+        Array(new ErgoToken(tokenId, devFeeAmount)),
+        feeContractToken.toAddress,
+        minAmount
+      )
+
+    val unsignedTransaction = txHelper.buildUnsignedTransaction(
+      inputs = Array(hodlBox, fundingBox),
+      outputs = Array(hodlOutBox, recipientBox, devFeeBox)
+    )
+
+   // println(unsignedTransaction.toJson(true))
+
+    noException shouldBe thrownBy {
+      txHelper.signTransaction(
+        unsignedTransaction
+      )
+    }
+
   }
 
 }

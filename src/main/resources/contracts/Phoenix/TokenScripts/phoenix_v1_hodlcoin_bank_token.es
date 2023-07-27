@@ -33,7 +33,6 @@
 
     // ===== Compile Time Constants ($) ===== //
     // $phoenixFeeContractBytesHash: Coll[Byte]
-    // $tokenId: Coll[Byte]
 
     // ===== Context Variables (@) ===== //
     // None

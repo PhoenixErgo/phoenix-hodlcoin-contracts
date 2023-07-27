@@ -2,12 +2,7 @@ package mockchain
 
 import contracts.PhoenixContracts
 import mockUtils.FileMockedErgoClient
-import org.ergoplatform.appkit.{
-  Address,
-  BlockchainContext,
-  ErgoContract,
-  InputBox
-}
+import org.ergoplatform.appkit.{Address, BlockchainContext, ErgoContract, InputBox}
 import utils.{ContractCompile, OutBoxes, TransactionHelper}
 import mockClient.HttpClientTesting
 
@@ -65,13 +60,14 @@ trait PhoenixCommon extends HttpClientTesting {
   val phoenixContract: ErgoContract =
     compiler.compileBankContract(phoenixScript, feeContract)
 
-  val feeContractToken: ErgoContract = compiler.compileFeeContract(
+  val feeContractToken: ErgoContract = compiler.compileFeeTokenContract(
     feeScriptToken,
+    tokenId,
     minMinerFeeNanoErg
   )
 
   val phoenixContractToken: ErgoContract =
-    compiler.compileBankContract(phoenixScriptToken, feeContract)
+    compiler.compileBankContract(phoenixScriptToken, feeContractToken)
 
   val proxyScript: String =
     PhoenixContracts.phoenix_v1_hodlcoin_proxy.contractScript
@@ -126,7 +122,7 @@ trait PhoenixCommon extends HttpClientTesting {
 
     val bankFee =
       hodlBoxIn.getRegisters.get(3).getValue.asInstanceOf[Long] // R7
-    val devFee = hodlBoxIn.getRegisters.get(3).getValue.asInstanceOf[Long] // R8
+    val devFee = hodlBoxIn.getRegisters.get(4).getValue.asInstanceOf[Long] // R8
 
     val price = hodlPrice(hodlBoxIn)
     val precisionFactor = extractPrecisionFactor(hodlBoxIn)

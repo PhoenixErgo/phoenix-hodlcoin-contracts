@@ -2,6 +2,7 @@ package utils
 
 import org.ergoplatform.appkit._
 import scorex.crypto.hash.Blake2b256
+import scorex.util.encode.Base16
 
 class ContractCompile(ctx: BlockchainContext) {
 
@@ -57,6 +58,26 @@ class ContractCompile(ctx: BlockchainContext) {
           minMinerFeeNanoErg
         )
         .build(),
+      contract
+    )
+  }
+
+  def compileFeeTokenContract(
+                          contract: String,
+                          tokenId: String,
+                          minMinerFeeNanoErg: Long
+                        ): ErgoContract = {
+    println("token id: " + tokenId)
+    this.ctx.compileContract(
+      ConstantsBuilder
+        .create()
+        .item(
+          "$minerFee",
+          minMinerFeeNanoErg
+        ).item(
+          "$tokenId",
+        Base16.decode(tokenId).get
+        ).build(),
       contract
     )
   }
