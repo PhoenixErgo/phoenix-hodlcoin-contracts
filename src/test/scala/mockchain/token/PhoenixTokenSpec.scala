@@ -41,8 +41,8 @@ class PhoenixTokenSpec extends AnyFlatSpec
     val feeDenom = 1000L
 
     val bankFee =
-      hodlBoxIn.getRegisters.get(3).getValue.asInstanceOf[Long] // R7
-    val devFee = hodlBoxIn.getRegisters.get(4).getValue.asInstanceOf[Long] // R8
+      hodlBoxIn.getRegisters.get(4).getValue.asInstanceOf[Long] // R8
+    val devFee = hodlBoxIn.getRegisters.get(3).getValue.asInstanceOf[Long] // R7
 
     val price = hodlTokenPrice(hodlBoxIn)
     val precisionFactor = extractPrecisionFactor(hodlBoxIn)
@@ -303,10 +303,10 @@ class PhoenixTokenSpec extends AnyFlatSpec
 
   "PhoenixTokenBurnOperation" should "succeed when all conditions are met" in {
 
-    val tokenAmount = 1000 * 1000000000L
-    val hodlTokenAmount = 1000000000L
+    val tokenAmount = 10000000 * 1000000000L
+    val hodlTokenAmount = 40000000 * 1000000000L
 
-    val hodlBurnAmount = 20000000
+    val hodlBurnAmount = 2000
 
     val hodlSingleton = new ErgoToken(hodlBankNft, 1L)
     val hodlTokens = new ErgoToken(hodlTokenId, hodlTokenAmount)
@@ -372,7 +372,7 @@ class PhoenixTokenSpec extends AnyFlatSpec
       outputs = Array(hodlOutBox, recipientBox, devFeeBox)
     )
 
-   // println(unsignedTransaction.toJson(true))
+    require(hodlOutBox.getTokens.get(2).getValue == hodlBox.getTokens.get(2).getValue - 1940)
 
     noException shouldBe thrownBy {
       txHelper.signTransaction(

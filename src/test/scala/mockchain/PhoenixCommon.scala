@@ -77,8 +77,8 @@ trait PhoenixCommon extends HttpClientTesting {
   // R4: Long             TotalTokenSupply
   // R5: Long             PrecisionFactor
   // R6: Long             MinBankValue
-  // R7: Long             BankFee
-  // R8: Long             DevFee
+  // R7: Long             DevFee
+  // R8: Long             BankFee
 
   val totalSupply: Long = 50000000 * 1000000000L
   val precisionFactor = 1000000L
@@ -121,8 +121,8 @@ trait PhoenixCommon extends HttpClientTesting {
     val feeDenom = 1000L
 
     val bankFee =
-      hodlBoxIn.getRegisters.get(3).getValue.asInstanceOf[Long] // R7
-    val devFee = hodlBoxIn.getRegisters.get(4).getValue.asInstanceOf[Long] // R8
+      hodlBoxIn.getRegisters.get(4).getValue.asInstanceOf[Long] // R8
+    val devFee = hodlBoxIn.getRegisters.get(3).getValue.asInstanceOf[Long] // R7
 
     val price = hodlPrice(hodlBoxIn)
     val precisionFactor = extractPrecisionFactor(hodlBoxIn)

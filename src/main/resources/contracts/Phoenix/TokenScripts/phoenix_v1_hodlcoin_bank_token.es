@@ -126,16 +126,16 @@
         // ===== Burn Tx ===== //
         val validBurnTx: Boolean = {
 
-            // Outputs
-            val phoenixFeeBoxOUT: Box = OUTPUTS(2)
-
             val hodlCoinsBurned: Long = hodlCoinsOut - hodlCoinsIn
             val expectedAmountBeforeFees: Long = (hodlCoinsBurned * price) / precisionFactor
             val bankFeeAmount: Long = (expectedAmountBeforeFees * bankFeeNum) / feeDenom
             val devFeeAmount: Long = (expectedAmountBeforeFees * devFeeNum) / feeDenom
             val expectedUserAmount: Long = expectedAmountBeforeFees - bankFeeAmount - devFeeAmount // The buyer never gets the bankFeeAmount since it remains in the bank box.
 
-            val validBankWithdraw: Boolean = (reserveOut == reserveIn - expectedUserAmount + bankFeeAmount) // What should have left the bank is the amount the user got plus the bank fee amount which must remain in the bank.
+            val validBankWithdraw: Boolean = (reserveOut >= reserveIn - expectedUserAmount - devFeeAmount) // What should have left the bank is the amount the user got plus the bank fee amount which must remain in the bank.
+
+            // Outputs
+            val phoenixFeeBoxOUT: Box = OUTPUTS(2)
 
             val validPhoenixFee: Boolean = {
 
@@ -158,5 +158,4 @@
         sigmaProp(validBurnTx)
 
     }
-
 }

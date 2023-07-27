@@ -151,7 +151,7 @@ class OutBoxes(ctx: BlockchainContext) {
       amount: Long = minAmount,
       additionalToken: Option[ErgoToken] = None
   ): OutBox = {
-    val tokensArray = if(additionalToken.isDefined){
+    val tokensArray = if (additionalToken.isDefined) {
       Array(hodlSingleton, hodlToken, additionalToken.get)
     } else {
       Array(hodlSingleton, hodlToken)
@@ -164,8 +164,8 @@ class OutBoxes(ctx: BlockchainContext) {
         ErgoValue.of(totalTokenSupply),
         ErgoValue.of(precisionFactor),
         ErgoValue.of(minBankValue),
-        ErgoValue.of(bankFeeNum),
-        ErgoValue.of(devFeeNum)
+        ErgoValue.of(devFeeNum),
+        ErgoValue.of(bankFeeNum)
       )
       .contract(hodlContract)
       .build()

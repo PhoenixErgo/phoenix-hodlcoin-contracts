@@ -67,7 +67,6 @@ class ContractCompile(ctx: BlockchainContext) {
                           tokenId: String,
                           minMinerFeeNanoErg: Long
                         ): ErgoContract = {
-    println("token id: " + tokenId)
     this.ctx.compileContract(
       ConstantsBuilder
         .create()
