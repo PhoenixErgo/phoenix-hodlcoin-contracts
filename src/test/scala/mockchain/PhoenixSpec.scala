@@ -271,8 +271,8 @@ class PhoenixSpec
 
   "PhoenixBurnOperation" should "succeed when all conditions are met" in {
 
-    val ergAmount = 1000 * 1000000000L
-    val hodlErgAmount = 100 * 1000000000L
+    val ergAmount = 100000000 * 1000000000L
+    val hodlErgAmount = totalSupply / 10 * 9
 
     val hodlBurnAmount = 20
 
@@ -294,6 +294,8 @@ class PhoenixSpec
       .convertToInputWith(fakeTxId1, fakeIndex)
 
     val (userBoxAmount, devFeeAmount) = burnAmount(hodlBox, hodlBurnAmount)
+    require(userBoxAmount > 0)
+    require(devFeeAmount > 0)
 
     val fundingBox = outBoxObj
       .tokenOutBox(
