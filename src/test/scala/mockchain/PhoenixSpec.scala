@@ -337,8 +337,8 @@ class PhoenixSpec
 
   "PhoenixBurnOperation" should "fail when user's box takes more Erg than allowed" in {
 
-    val ergAmount = 1000 * 1000000000L
-    val hodlErgAmount = 100 * 1000000000L
+    val ergAmount = 100000000 * 1000000000L
+    val hodlErgAmount = totalSupply / 10 * 9
 
     val hodlBurnAmount = 20
 
@@ -402,8 +402,8 @@ class PhoenixSpec
 
   "PhoenixBurnOperation" should "fail when developer's box takes more Erg than allowed" in {
 
-    val ergAmount = 1000 * 1000000000L
-    val hodlErgAmount = 100 * 1000000000L
+    val ergAmount = 100000000 * 1000000000L
+    val hodlErgAmount = totalSupply / 10 * 9
 
     val hodlBurnAmount = 20
 
@@ -470,8 +470,8 @@ class PhoenixSpec
 
   "PhoenixBurnOperation" should "fail when developer's box has an incorrect script" in {
 
-    val ergAmount = 1000 * 1000000000L
-    val hodlErgAmount = 100 * 1000000000L
+    val ergAmount = 100000000 * 1000000000L
+    val hodlErgAmount = totalSupply / 10 * 9
 
     val hodlBurnAmount = 20
 
