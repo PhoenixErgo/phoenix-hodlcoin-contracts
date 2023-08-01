@@ -5,9 +5,9 @@
 
 ## Documentation
 
-The fee distribution was computed by creating a linear program out of the desired constraints. The Jupyter Notebook code can be found [here](docs/phoenix_fee_distribution.pdf).
+The fee distribution was computed by creating a linear program out of the desired constraints, the Jupyter Notebook code can be found [here](docs/phoenix_fee_distribution.pdf). 
 
-The percentage of the dev fee (0.3%) is split in the following way:
+The percentage of the dev fee is split in the following way:
 - 0.25% -> Bruno
 - 0.25% -> Pulsarz
 - 0.25% -> Phoenix
