@@ -12,5 +12,8 @@ ErgoScript contracts for the Phoenix implementation of HodlCoin.
 3. Refund Tx
 4. Fee Distribution Tx
 
+## Fee Implementation Guidelines
+
+
 ## Protocol Diagrams
-![Image](docs/Phoenix%20Hodl%20Coin%20Protocol%20Diagrams.png)
+![Image](docs/phoenix_hodlerg_protocol_diagrams.png)

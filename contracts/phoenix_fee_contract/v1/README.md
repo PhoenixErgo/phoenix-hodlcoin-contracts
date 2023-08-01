@@ -5,6 +5,15 @@
 
 ## Documentation
 
+The fee distribution was computed by creating a linear program out of the desired constraints. The Jupyter Notebook code can be found [here](docs/phoenix_fee_distribution.pdf).
+
+The percentage of the dev fee (0.3%) is split in the following way:
+- 0.25% -> Bruno
+- 0.25% -> Pulsarz
+- 0.25% -> Phoenix
+- 0.15% -> Kushti
+- 0.1% -> Kras
+
 ### Description
 Contract guarding the fee box of the HodlCoin protocol.
 
@@ -19,12 +28,10 @@ Registers
 1. Fee Distribution Tx
 - Inputs: PhoenixFee1, ... , PhoenixFeeM
 - DataInputs: None
-- Outputs: Dev1PK, Dev2PK, Dev3PK, PhoenixPK, MinerFee
+- Outputs: Bruno, Pulsarz, Phoenix, Kushti, Kras, MinerFee
 - Context Variables: None
 
 ### Compile Time Constants ($)
-- $devPercentage: (Long, Long)
-- $phoenixPercentage: (Long, Long)
 - $minerFee: Long
 
 ### Context Variables (@)

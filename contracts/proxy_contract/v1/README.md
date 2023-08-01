@@ -17,8 +17,7 @@ Registers
 - R5: Coll[Byte]    BankSingletonTokenId
 - R6: Coll[Byte]    HodlCoinTokenId
 - R7: Long          MinBoxValue
-- R8: Long          MinTxOperatorFee
-- R9: Long          MinerFee
+- R8: Long          MinerFee
 
 ### Relevant Transactions
 1. Mint Tx
@@ -38,7 +37,7 @@ Registers
 - Context Variables: None
 
 ### Compile Time Constants ($)
-- None
+- $minTxOperatorFee: Long
 
 ### Context Variables (@)
 - None
