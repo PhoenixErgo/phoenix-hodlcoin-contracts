@@ -37,5 +37,8 @@ The percentage of the dev fee is split in the following way:
 - 0.15% -> Kushti
 - 0.1% -> Kras
 
-## Protocol Diagrams
+## References
+The HodlCoin protocol paper can be found [here](https://eprint.iacr.org/2023/1029.pdf).
+
+## Protocol Implementation Diagrams
 ![Image](docs/phoenix_hodlerg_protocol_diagrams.png)
