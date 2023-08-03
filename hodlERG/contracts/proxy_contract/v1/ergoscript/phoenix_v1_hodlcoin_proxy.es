@@ -87,7 +87,7 @@
 
                 val expectedAmountDeposited: Long = (hodlCoinsCircDelta * price) / precisionFactor
 
-                val validProxyValue: Boolean = (SELF.value - minBoxValue - minerFee - txOperatorFee == expectedAmountDeposited)
+                val validProxyValue: Boolean = (SELF.value - minBoxValue - minerFee - txOperatorFee >= expectedAmountDeposited)
 
                 val validBuyerBoxOUT: Boolean = {
 
