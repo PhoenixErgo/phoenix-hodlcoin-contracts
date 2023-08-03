@@ -39,7 +39,7 @@
     val pulsarzAddress: SigmaProp = PK("9hHondX3uZMY2wQsXuCGjbgZUqunQyZCNNuwGu6rL7AJC8dhRGa")
     val phoenixAddress: SigmaProp = PK("9iPs1ujGj2eKXVg82aGyAtUtQZQWxFaki48KFixoaNmUAoTY6wV")
     val kushtiAddress: SigmaProp  = PK("9iE2MadGSrn1ivHmRZJWRxzHffuAk6bPmEv6uJmPHuadBY8td5u")
-    val krasAddress: SigmaProp    = PK("")
+    val krasAddress: SigmaProp    = PK("9hQqHP88Sj9ji5Wr1HiNmy7AABF5KzyWxKnZjeYSfRquyVkVGzp")
 
     // ===== Fee Distribution Tx ===== //
     val validFeeDistributionTx: Boolean = {                         

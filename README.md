@@ -20,7 +20,7 @@ For the hodlCoin protocol, any implementation of the fee contract must send a mi
 - Let D be the developer fee percentage.
 - Then, Q >= 0.025 * (F/D)
 
-As long as this condition is satisfied, you may include any other constrain in your implementation of the fee contract.
+As long as this condition is satisfied, you may include any other constraint in your implementation of the fee contract.
 
 ## hodlERG Phoenix Fee Implementation
 For the Phoenix Finance implementation of hodlERG, we kept the original fee percentages:
