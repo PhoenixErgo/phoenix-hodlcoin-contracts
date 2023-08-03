@@ -18,6 +18,7 @@ Registers
 - R6: Coll[Byte]    HodlCoinTokenId
 - R7: Long          MinBoxValue
 - R8: Long          MinerFee
+- R9: Long          TxOperatorFee
 
 ### Relevant Transactions
 1. Mint Tx
