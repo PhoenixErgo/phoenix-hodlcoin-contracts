@@ -16,4 +16,4 @@ For the hodlCoin protocol, any implementation of the fee contract must send a mi
 As long as this condition is satisfied, you may include any other constraint in your implementation of the fee contract.
 
 ## References
-The HodlCoin protocol paper can be found [here](https://eprint.iacr.org/2023/1029.pdf).
+The HodlCoin protocol paper can be found [here](https://eprint.iacr.org/2023/1029).
