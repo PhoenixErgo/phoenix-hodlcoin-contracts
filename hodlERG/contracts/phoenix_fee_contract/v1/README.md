@@ -1,7 +1,7 @@
 # Phoenix HodlCoin: Fee Contract - v1.0.0
 
 ## Contract
-- [ErgoScript](ergoscript/phoenix_v1_hodlcoin_fee.es)
+- [ErgoScript](./ergoscript/phoenix_v1_hodlcoin_fee.es)
 
 ## Documentation
 

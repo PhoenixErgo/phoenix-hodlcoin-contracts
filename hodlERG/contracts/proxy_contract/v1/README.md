@@ -1,7 +1,7 @@
 # Phoenix HodlCoin: Proxy Contract - v1.0.0
 
 ## Contract
-- [ErgoScript](ergoscript/phoenix_v1_hodlcoin_proxy.es)
+- [ErgoScript](./ergoscript/phoenix_v1_hodlcoin_proxy.es)
 
 ## Documentation
 

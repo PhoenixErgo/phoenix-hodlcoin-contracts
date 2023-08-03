@@ -1,7 +1,7 @@
 # Phoenix HodlCoin: Bank Contract - v1.0.0
 
 ## Contract
-- [ErgoScript](ergoscript/phoenix_v1_hodlcoin_bank.es)
+- [ErgoScript](./ergoscript/phoenix_v1_hodlcoin_bank.es)
 
 ## Documentation
 
