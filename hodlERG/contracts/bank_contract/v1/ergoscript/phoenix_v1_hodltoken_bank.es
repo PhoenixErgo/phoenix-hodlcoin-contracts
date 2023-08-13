@@ -1,15 +1,17 @@
 {
 
+    //
     // ===== Contract Information ===== //
     // Name: Phoenix HodlCoin Bank
     // Description: Contract for the bank box of the HodlCoin protocol.
     // Version: 1.0.0
-    // Author: Luca D'Angelo (ldgaetano@protonmail.com), MGPai
+    // Author: Luca D'Angelo (ldgaetano@protonmail.com), MGPai, kushti
 
     // ===== Box Contents ===== //
     // Tokens
     // 1. (BankSingletonId, 1)
     // 2. (HodlCoinTokenId, HodlCoinTokenAmount)
+    // 3. (BaseTokenId, BaseTokenAmount)
     // Registers
     // R4: Long             TotalTokenSupply
     // R5: Long             PrecisionFactor
@@ -44,13 +46,13 @@
     val feeDenom: Long              = 1000L
 
     // Bank Input
-    val reserveIn: Long         = SELF.value
+    val reserveIn: Long         = SELF.tokens(2)._2
     val hodlCoinsIn: Long       = SELF.tokens(1)._2               // hodlERG token amount in the bank box.
     val hodlCoinsCircIn: Long   = totalTokenSupply - hodlCoinsIn  // hodlERG in circulation since this value represents what is not inside the box, this must not ever be 0.
 
     // Bank Output
     val bankBoxOUT: Box     = OUTPUTS(0)
-    val reserveOut: Long    = bankBoxOUT.value
+    val reserveOut: Long    = bankBoxOUT.tokens(2)._2
     val hodlCoinsOut: Long  = bankBoxOUT.tokens(1)._2
 
     // Bank Info
@@ -60,12 +62,13 @@
 
     val validBankRecreation: Boolean = {
 
-        val validValue: Boolean = (bankBoxOUT.value >= minBankValue) // There must be at least 1 ERG always in the box
+        val validValue: Boolean = (bankBoxOUT.value >= SELF.value) // ERGs in the bank should not be decreased
 
         val validContract: Boolean = (bankBoxOUT.propositionBytes == SELF.propositionBytes)
 
         val validTokens: Boolean = {
 
+            val validBaseTokenId = (bankBoxOUT.tokens(2)._1 == SELF.tokens(2)._1)
             val validBankSingleton: Boolean = (bankBoxOUT.tokens(0) == SELF.tokens(0))          // Singleton token amount never changes
             val validHodlCoinTokenId: Boolean = (bankBoxOUT.tokens(1)._1 == SELF.tokens(1)._1)
             val validHodlCoinTokenAmount: Boolean = (bankBoxOUT.tokens(1)._2 >= 1L)             // HodlCoin token amount can change, but there must be 1 hodlerg inside the bank always
@@ -73,7 +76,8 @@
             allOf(Coll(
                 validBankSingleton,
                 validHodlCoinTokenId,
-                validHodlCoinTokenAmount
+                validHodlCoinTokenAmount,
+                validBaseTokenId
             ))
 
         }
@@ -106,11 +110,11 @@
 
             val expectedAmountDeposited: Long = (hodlCoinsCircDelta * price) / precisionFactor // Price of hodlCoin in nanoERG.
 
-            val validBankDeposit: Boolean = (reserveOut >= reserveIn + expectedAmountDeposited)
+            val validTokenDeposit: Boolean = (reserveOut >= reserveIn + expectedAmountDeposited)
 
             allOf(Coll(
                 validBankRecreation,
-                validBankDeposit
+                validTokenDeposit
             ))
 
         }
@@ -122,21 +126,22 @@
         // ===== Burn Tx ===== //
         val validBurnTx: Boolean = {
 
-            // Outputs
-            val phoenixFeeBoxOUT: Box = OUTPUTS(2)
-
             val hodlCoinsBurned: Long = hodlCoinsOut - hodlCoinsIn
             val expectedAmountBeforeFees: Long = (hodlCoinsBurned * price) / precisionFactor
             val bankFeeAmount: Long = (expectedAmountBeforeFees * bankFeeNum) / feeDenom
             val devFeeAmount: Long = (expectedAmountBeforeFees * devFeeNum) / feeDenom
             val expectedUserAmount: Long = expectedAmountBeforeFees - bankFeeAmount - devFeeAmount // The buyer never gets the bankFeeAmount since it remains in the bank box.
 
-            val validBankWithdraw: Boolean = (reserveOut == reserveIn - expectedAmountBeforeFees + bankFeeAmount)
+            val validBankWithdraw: Boolean = (reserveOut >= reserveIn - expectedUserAmount - devFeeAmount) // What should have left the bank is the amount the user got plus the bank fee amount which must remain in the bank.
+
+            // Outputs
+            val phoenixFeeBoxOUT: Box = OUTPUTS(2)
 
             val validPhoenixFee: Boolean = {
 
                 allOf(Coll(
-                    (phoenixFeeBoxOUT.value == devFeeAmount),
+                    (phoenixFeeBoxOUT.tokens(0)._1 == SELF.tokens(2)._1),
+                    (phoenixFeeBoxOUT.tokens(0)._2 == devFeeAmount),
                     (blake2b256(phoenixFeeBoxOUT.propositionBytes) == $phoenixFeeContractBytesHash)
                 ))
 
@@ -153,5 +158,4 @@
         sigmaProp(validBurnTx)
 
     }
-
 }
