@@ -52,11 +52,8 @@
         val krasBoxOUT: Box     = OUTPUTS(4)
         val minerFeeBoxOUT: Box = OUTPUTS(5)
 
-        val outputAmount: Long = OUTPUTS.map({ (output: Box) => output.value }).fold(0L, { (acc: Long, curr: Long) => acc + curr })
         val devAmount: Long = OUTPUTS.map({ (output: Box) => if (output.tokens(0)._1 == hodlTokenId) output.tokens(0)._2 else 0L }).fold(0L, { (acc: Long, curr: Long) => acc + curr })
-
-        val validMinAmount: Boolean = (outputAmount >= 5000000L) // This prevents dust transactions
-        
+       
         val validDevBoxes: Boolean = {
 
             val brunoAmount: Long   = (brunoNum * devAmount) / feeDenom
@@ -64,10 +61,10 @@
             val phoenixAmount: Long = (phoenixNum * devAmount) / feeDenom
             val kushtiAmount: Long  = (kushtiNum * devAmount) / feeDenom
 
-            val validBruno: Boolean   = (brunoBoxOUT.value == brunoAmount) && (brunoBoxOUT.propositionBytes == brunoAddress.propBytes)
-            val validPulsarz: Boolean = (pulsarzBoxOUT.value == pulsarzAmount) && (pulsarzBoxOUT.propositionBytes == pulsarzAddress.propBytes)
-            val validPhoenix: Boolean = (phoenixBoxOUT.value == phoenixAmount) && (phoenixBoxOUT.propositionBytes == phoenixAddress.propBytes)
-            val validKushti: Boolean  = (kushtiBoxOUT.value == kushtiAmount) && (kushtiBoxOUT.propositionBytes == kushtiAddress.propBytes)
+            val validBruno: Boolean   = (brunoBoxOUT.tokens.filter({ (t: (Coll[Byte], Long)) => t._1 == hodlTokenId })(0)._2 == brunoAmount) && (brunoBoxOUT.propositionBytes == brunoAddress.propBytes)
+            val validPulsarz: Boolean = (pulsarzBoxOUT.tokens.filter({ (t: (Coll[Byte], Long)) => t._1 == hodlTokenId })(0)._2 == pulsarzAmount) && (pulsarzBoxOUT.propositionBytes == pulsarzAddress.propBytes)
+            val validPhoenix: Boolean = (phoenixBoxOUT.tokens.filter({ (t: (Coll[Byte], Long)) => t._1 == hodlTokenId })(0)._2 == phoenixAmount) && (phoenixBoxOUT.propositionBytes == phoenixAddress.propBytes)
+            val validKushti: Boolean  = (kushtiBoxOUT.tokens.filter({ (t: (Coll[Byte], Long)) => t._1 == hodlTokenId })(0)._2 == kushtiAmount) && (kushtiBoxOUT.propositionBytes == kushtiAddress.propBytes)
 
             allOf(Coll(
                 validBruno,
