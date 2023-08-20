@@ -1,12 +1,12 @@
-# Phoenix HodlERG: Proxy Contract - v1.0.0
+# Phoenix HodlToken: Proxy Contract - v1.0.0
 
 ## Contract
-- [ErgoScript](./ergoscript/phoenix_v1_hodlerg_proxy.es)
+- [ErgoScript](./ergoscript/phoenix_v1_hodltoken_proxy.es)
 
 ## Documentation
 
 ### Description
-Contract guarding the proxy box of the hodlERG protocol.
+Contract guarding the proxy box of the HodlCoin protocol.
 
 ### Box Contents
 Tokens
