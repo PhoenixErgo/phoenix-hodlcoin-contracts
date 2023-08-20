@@ -2,14 +2,14 @@
 
     // ===== Contract Information ===== //
     // Name: Phoenix HodlToken Bank
-    // Description: Contract for the bank box of the HodlToken protocol.
+    // Description: Contract for the bank box of the hodlToken protocol.
     // Version: 1.0.0
     // Author: Luca D'Angelo (ldgaetano@protonmail.com), MGPai, Kushti
 
     // ===== Box Contents ===== //
     // Tokens
     // 1. (BankSingletonId, 1)
-    // 2. (HodlCoinTokenId, HodlCoinTokenAmount)
+    // 2. (HodlTokenId, HodlTokenAmount)
     // 3. (BaseTokenId, BaseTokenAmount)
     // Registers
     // R4: Long             TotalTokenSupply
@@ -33,7 +33,7 @@
     // ===== Compile Time Constants ($) ===== //
     // $phoenixFeeContractBytesHash: Coll[Byte]
 
-    // ===== Context Variables (@) ===== //
+    // ===== Context Variables (_) ===== //
     // None
 
     // ===== Relevant Variables ===== //
@@ -45,8 +45,8 @@
     val feeDenom: Long              = 1000L
 
     // Bank Input
-    val reserveIn: Long          = SELF.tokens(2)._2                // amount of base token in the bank box
     val hodlTokensIn: Long       = SELF.tokens(1)._2                // hodlToken token amount in the bank box.
+    val reserveIn: Long          = SELF.tokens(2)._2                // Amount of base token in the bank box
     val hodlTokensCircIn: Long   = totalTokenSupply - hodlTokensIn  // hodlToken in circulation since this value represents what is not inside the box, this must not ever be 0.
 
     // Bank Output
@@ -61,22 +61,24 @@
 
     val validBankRecreation: Boolean = {
 
-        val validValue: Boolean = (bankBoxOUT.value >= SELF.value) // ERGs in the bank should not be decreased
+        val validValue: Boolean = (bankBoxOUT.value == SELF.value) // ERG value in bank box should not change for any reason, since HoldToken version of HodlCoin has nothing to do with ERG.
 
         val validContract: Boolean = (bankBoxOUT.propositionBytes == SELF.propositionBytes)
 
         val validTokens: Boolean = {
 
-            val validBaseTokenId: Boolean = (bankBoxOUT.tokens(2)._1 == SELF.tokens(2)._1)
             val validBankSingleton: Boolean = (bankBoxOUT.tokens(0) == SELF.tokens(0))          // Singleton token amount never changes
-            val validHodlCoinTokenId: Boolean = (bankBoxOUT.tokens(1)._1 == SELF.tokens(1)._1)
-            val validHodlCoinTokenAmount: Boolean = (bankBoxOUT.tokens(1)._2 >= 1L)             // HodlToken token amount can change, but there must be 1 hodlerg inside the bank always
+            val validHodlTokenId: Boolean = (bankBoxOUT.tokens(1)._1 == SELF.tokens(1)._1)
+            val validHodlTokenAmount: Boolean = (bankBoxOUT.tokens(1)._2 >= 1L)                 // HodlToken token amount can change, but there must be 1 hodlerg inside the bank always
+            val validBaseTokenId: Boolean = (bankBoxOUT.tokens(2)._1 == SELF.tokens(2)._1)
+            val validBaseTokenMinBankValue: Boolean = (bankBoxOUT.tokens(2)._2 >= minBankValue) // The bank must have a minimum value of the base token.
 
             allOf(Coll(
                 validBankSingleton,
                 validHodlCoinTokenId,
                 validHodlCoinTokenAmount,
-                validBaseTokenId
+                validBaseTokenId,
+                validBaseTokenMinBankvalue
             ))
 
         }
@@ -110,7 +112,29 @@
             val expectedAmountDeposited: Long = (hodlTokensCircDelta * price) / precisionFactor // Price of hodlCoin in nanoERG.
 
             val validTokenDeposit: Boolean = (reserveOut >= reserveIn + expectedAmountDeposited)
+                // Ensure that the buyer receives the total value of box.
+                val validValueTransfer: Boolean = {
 
+                    OUTPUTS.map({ (o: Box) => 
+                        if (o.propositionBytes == buyerPK.propBytes) o.value else 0L
+                    }).fold(0L, { (a: Long, b: Long) => a + b }) >= SELF.value
+
+                }
+
+                // If the box has tokens in it, all must go to buyer.
+                val validTokenTransfer: Boolean = {
+
+                    if(SELF.tokens.size > 0) {
+
+                        OUTPUTS.exists({ (o: Box) =>
+                            (o.tokens == SELF.tokens) && (o.propositionBytes == buyerPK.propBytes)
+                        })
+                        
+                    } else {
+                        true
+                    }
+
+                }
             allOf(Coll(
                 validBankRecreation,
                 validTokenDeposit

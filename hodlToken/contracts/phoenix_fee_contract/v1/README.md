@@ -6,7 +6,7 @@
 ## Documentation
 
 ### Description
-Contract guarding the fee box of the HodlCoin protocol.
+Contract guarding the fee box of the hodlToken protocol.
 
 ### Box Contents
 Tokens
@@ -28,5 +28,5 @@ Registers
 - $phoenixNum: Long
 - $kushtiNum: Long
 
-### Context Variables (@)
+### Context Variables (_)
 - None

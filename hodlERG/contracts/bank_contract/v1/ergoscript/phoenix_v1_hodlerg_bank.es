@@ -2,14 +2,14 @@
 
     // ===== Contract Information ===== //
     // Name: Phoenix HodlERG Bank
-    // Description: Contract for the bank box of the HodlCoin protocol.
+    // Description: Contract for the bank box of the hodlERG protocol.
     // Version: 1.0.0
     // Author: Luca D'Angelo (ldgaetano@protonmail.com), MGPai
 
     // ===== Box Contents ===== //
     // Tokens
     // 1. (BankSingletonId, 1)
-    // 2. (HodlCoinTokenId, HodlCoinTokenAmount)
+    // 2. (HodlERGTokenId, HodlERGTokenAmount)
     // Registers
     // R4: Long             TotalTokenSupply
     // R5: Long             PrecisionFactor
@@ -32,7 +32,7 @@
     // ===== Compile Time Constants ($) ===== //
     // $phoenixFeeContractBytesHash: Coll[Byte]
 
-    // ===== Context Variables (@) ===== //
+    // ===== Context Variables (_) ===== //
     // None
 
     // ===== Relevant Variables ===== //
@@ -45,18 +45,18 @@
 
     // Bank Input
     val reserveIn: Long         = SELF.value
-    val hodlCoinsIn: Long       = SELF.tokens(1)._2               // hodlERG token amount in the bank box.
-    val hodlCoinsCircIn: Long   = totalTokenSupply - hodlCoinsIn  // hodlERG in circulation since this value represents what is not inside the box, this must not ever be 0.
+    val hodlERGIn: Long         = SELF.tokens(1)._2               // hodlERG token amount in the bank box.
+    val hodlERGCircIn: Long     = totalTokenSupply - hodlERGIn    // hodlERG in circulation since this value represents what is not inside the box, this must not ever be 0.
 
     // Bank Output
     val bankBoxOUT: Box     = OUTPUTS(0)
     val reserveOut: Long    = bankBoxOUT.value
-    val hodlCoinsOut: Long  = bankBoxOUT.tokens(1)._2
+    val hodlERGOut: Long    = bankBoxOUT.tokens(1)._2
 
     // Bank Info
-    val hodlCoinsCircDelta: Long    = hodlCoinsIn - hodlCoinsOut // When minting hodlCoin, this is the amount of coins the buyer gets.
-    val price: Long                 = (reserveIn.toBigInt * precisionFactor) / hodlCoinsCircIn
-    val isMintTx: Boolean           = (hodlCoinsCircDelta > 0L)
+    val hodlERGCircDelta: Long      = hodlERGIn - hodlERGOut // When minting hodlCoin, this is the amount of coins the buyer gets.
+    val price: BigInt               = (reserveIn.toBigInt * precisionFactor) / hodlERGCircIn
+    val isMintTx: Boolean           = (hodlERGCircDelta > 0L)
 
     val validBankRecreation: Boolean = {
 
@@ -67,13 +67,13 @@
         val validTokens: Boolean = {
 
             val validBankSingleton: Boolean = (bankBoxOUT.tokens(0) == SELF.tokens(0))          // Singleton token amount never changes
-            val validHodlCoinTokenId: Boolean = (bankBoxOUT.tokens(1)._1 == SELF.tokens(1)._1)
-            val validHodlCoinTokenAmount: Boolean = (bankBoxOUT.tokens(1)._2 >= 1L)             // HodlCoin token amount can change, but there must be 1 hodlerg inside the bank always
+            val validHodlERGTokenId: Boolean = (bankBoxOUT.tokens(1)._1 == SELF.tokens(1)._1)
+            val validHodlERGTokenAmount: Boolean = (bankBoxOUT.tokens(1)._2 >= 1L)              // HodlCoin token amount can change, but there must be 1 hodlerg inside the bank always
 
             allOf(Coll(
                 validBankSingleton,
-                validHodlCoinTokenId,
-                validHodlCoinTokenAmount
+                validHodlERGTokenId,
+                validHodlERGTokenAmount
             ))
 
         }
@@ -104,7 +104,7 @@
         // ===== Mint Tx ===== //
         val validMintTx: Boolean = {
 
-            val expectedAmountDeposited: Long = (hodlCoinsCircDelta * price) / precisionFactor // Price of hodlCoin in nanoERG.
+            val expectedAmountDeposited: Long = (hodlERGCircDelta * price) / precisionFactor // Price of hodlCoin in nanoERG.
 
             val validBankDeposit: Boolean = (reserveOut >= reserveIn + expectedAmountDeposited)
 
@@ -125,7 +125,7 @@
             // Outputs
             val phoenixFeeBoxOUT: Box = OUTPUTS(2)
 
-            val hodlCoinsBurned: Long = hodlCoinsOut - hodlCoinsIn
+            val hodlCoinsBurned: Long = hodlERGOut - hodlERGIn
             val expectedAmountBeforeFees: Long = (hodlCoinsBurned * price) / precisionFactor
             val bankFeeAmount: Long = (expectedAmountBeforeFees * bankFeeNum) / feeDenom
             val devFeeAmount: Long = (expectedAmountBeforeFees * devFeeNum) / feeDenom

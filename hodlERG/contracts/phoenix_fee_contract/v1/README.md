@@ -15,7 +15,7 @@ The percentage of the dev fee is split in the following way:
 - 0.1% -> Kras
 
 ### Description
-Contract guarding the fee box of the HodlCoin protocol.
+Contract guarding the fee box of the hodlERG protocol.
 
 ### Box Contents
 Tokens
@@ -34,5 +34,5 @@ Registers
 ### Compile Time Constants ($)
 - $minerFee: Long
 
-### Context Variables (@)
+### Context Variables (_)
 - None

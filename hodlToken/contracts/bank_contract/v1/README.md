@@ -6,12 +6,12 @@
 ## Documentation
 
 ### Description
-Contract for the bank box of the HodlCoin protocol.
+Contract for the bank box of the hodlToken protocol.
 
 ### Box Contents
 Tokens
 1. (BankSingletonId, 1)
-2. (HodlCoinTokenId, HodlCoinTokenAmount)
+2. (HodlTokenId, HodlTokenAmount)
 
 Registers
 - R4: Long          TotalTokenSupply
@@ -35,5 +35,5 @@ Registers
 ### Compile Time Constants ($)
 - $phoenixFeeContractBytesHash: Coll[Byte]
 
-### Context Variables (@)
+### Context Variables (_)
 - None
