@@ -48,7 +48,7 @@
     val minerFee: Long                          = SELF.R8[Long].get
     val txOperatorFee: Long                     = SELF.R9[Long].get
     val minerFeeErgoTreeBytesHash: Coll[Byte]   = fromBase16("e540cceffd3b8dd0f401193576cc413467039695969427df94454193dddfb375")
-    val isValidBank: Boolean                    = (INPUTS(0).tokens.size > 1 && INPUTS(0).tokens(0)._1 == bankSingletonTokenId) && (INPUTS(0).tokens(1)._1 == hodlCoinTokenId)
+    val isValidBank: Boolean                    = (INPUTS(0).tokens.size > 1 && INPUTS(0).tokens(0)._1 == bankSingletonTokenId) && (INPUTS(0).tokens(1)._1 == hodlERGTokenId)
 
     if (isValidBank) {
 
@@ -87,7 +87,7 @@
 
                 val expectedAmountDeposited: Long = (hodlERGCircDelta * price) / precisionFactor
 
-                val validProxyValue: Boolean = (SELF.value - minBoxValue - minerFee - txOperatorFee >= expectedAmountDeposited)
+                val validProxyValue: Boolean = (SELF.tokens(0)._2 >= expectedAmountDeposited)
 
                 val validBuyerBoxOUT: Boolean = {
 
@@ -118,7 +118,7 @@
                         (txOperatorFee >= $minTxOperatorFee),
                         (txOperatorFeeBoxOUT.value == txOperatorFee)
                     ))
-                
+
                 }
 
                 val validOutputSize: Boolean = (OUTPUTS.size == 4)
@@ -155,7 +155,7 @@
 
                 val validBuyerBoxOUT: Boolean = {
 
-                    val validERGTransfer: Boolean = (buyerPKBoxOUT.value == expectedAmountWithdrawn)
+                    val validERGTransfer: Boolean = (buyerPKBoxOUT.tokens(0)._2 == expectedAmountWithdrawn)
                     val validContract: Boolean = (buyerPKBoxOUT.propositionBytes == buyerPK.propBytes)
 
                     allOf(Coll(
@@ -180,7 +180,7 @@
                         (txOperatorFee >= $minTxOperatorFee),
                         (txOperatorFeeBoxOUT.value == txOperatorFee)
                     ))
-                
+
                 }
 
                 val validOutputSize: Boolean = (OUTPUTS.size == 5)
@@ -214,7 +214,7 @@
                     }).fold(0L, { (a: Long, b: Long) => a + b }) >= SELF.value
 
                 }
-    
+
                 // If the box has tokens in it, all must go to buyer.
                 val validTokenTransfer: Boolean = {
 
@@ -236,7 +236,7 @@
                 ))
 
             }
-            
+
             validBuyerBoxOUT
 
         }
