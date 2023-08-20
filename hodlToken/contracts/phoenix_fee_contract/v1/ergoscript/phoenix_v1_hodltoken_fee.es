@@ -2,7 +2,7 @@
 
     // ===== Contract Information ===== //
     // Name: Phoenix HodlToken Fee
-    // Description: Contract guarding the fee box for the HodlCoin protocol.
+    // Description: Contract guarding the fee box for the HodlToken protocol.
     // Version: 1.0.0
     // Author: Luca D'Angelo (ldgaetano@protonmail.com), MGPai
 
@@ -28,21 +28,21 @@
 
     // ===== Relevant Variables ===== //
     val minerFeeErgoTreeBytesHash: Coll[Byte] = fromBase16("e540cceffd3b8dd0f401193576cc413467039695969427df94454193dddfb375")
-    
+
     val hodlTokenId: Coll[Byte] = SELF.tokens(0)._1
     val feeDenom: Long   = 100L
     val brunoNum: Long   = 25L
     val pulsarzNum: Long = 25L
     val phoenixNum: Long = 25L
     val kushtiNum: Long  = 25L
-    
-    val brunoAddress: SigmaProp   = PK("9gnBtmSRBMaNTkLQUABoAqmU2wzn27hgqVvezAC9SU1VqFKZCp8")
+
+    val brunoAddress: SigmaProp   = PK("9exfustUCPDKXsfDrGNrmtkyLDwAie2rKKdUsPVa26RuBFaYeCL")
     val pulsarzAddress: SigmaProp = PK("9hHondX3uZMY2wQsXuCGjbgZUqunQyZCNNuwGu6rL7AJC8dhRGa")
     val phoenixAddress: SigmaProp = PK("9iPs1ujGj2eKXVg82aGyAtUtQZQWxFaki48KFixoaNmUAoTY6wV")
     val kushtiAddress: SigmaProp  = PK("9iE2MadGSrn1ivHmRZJWRxzHffuAk6bPmEv6uJmPHuadBY8td5u")
 
     // ===== Fee Distribution Tx ===== //
-    val validFeeDistributionTx: Boolean = {                         
+    val validFeeDistributionTx: Boolean = {
 
         // Outputs
         val brunoBoxOUT: Box    = OUTPUTS(0)
@@ -53,7 +53,7 @@
         val minerFeeBoxOUT: Box = OUTPUTS(5)
 
         val devAmount: Long = OUTPUTS.map({ (output: Box) => if (output.tokens(0)._1 == hodlTokenId) output.tokens(0)._2 else 0L }).fold(0L, { (acc: Long, curr: Long) => acc + curr })
-       
+
         val validDevBoxes: Boolean = {
 
             val brunoAmount: Long   = (brunoNum * devAmount) / feeDenom
@@ -87,7 +87,6 @@
         val validOutputSize: Boolean = (OUTPUTS.size == 6)
 
         allOf(Coll(
-            validMinAmount,
             validDevBoxes,
             validMinerFee,
             validOutputSize
@@ -95,6 +94,6 @@
 
     }
 
-    sigmaProp(validFeeDistributionTx) && atLeast(1, Coll(brunoAddress, pulsarzAddress, phoenixAddress, kushtiAddress, krasAddress)) // Done so we are incentivized to not spam the miner fee.
+    sigmaProp(validFeeDistributionTx) && atLeast(1, Coll(brunoAddress, pulsarzAddress, phoenixAddress, kushtiAddress)) // Done so we are incentivized to not spam the miner fee.
 
 }
