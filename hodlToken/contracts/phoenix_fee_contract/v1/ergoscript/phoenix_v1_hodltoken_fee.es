@@ -22,6 +22,9 @@
 
     // ===== Compile Time Constants ($) ===== //
     // $minerFee: Long
+    // $brunoNum: Long
+    // $phoenixNum: Long
+    // $kushtiNum: Long
 
     // ===== Context Variables (@) ===== //
     // None
@@ -31,13 +34,8 @@
 
     val hodlTokenId: Coll[Byte] = SELF.tokens(0)._1
     val feeDenom: Long   = 100L
-    val brunoNum: Long   = 25L
-    val pulsarzNum: Long = 25L
-    val phoenixNum: Long = 25L
-    val kushtiNum: Long  = 25L
 
     val brunoAddress: SigmaProp   = PK("9exfustUCPDKXsfDrGNrmtkyLDwAie2rKKdUsPVa26RuBFaYeCL")
-    val pulsarzAddress: SigmaProp = PK("9hHondX3uZMY2wQsXuCGjbgZUqunQyZCNNuwGu6rL7AJC8dhRGa")
     val phoenixAddress: SigmaProp = PK("9iPs1ujGj2eKXVg82aGyAtUtQZQWxFaki48KFixoaNmUAoTY6wV")
     val kushtiAddress: SigmaProp  = PK("9iE2MadGSrn1ivHmRZJWRxzHffuAk6bPmEv6uJmPHuadBY8td5u")
 
@@ -56,19 +54,16 @@
 
         val validDevBoxes: Boolean = {
 
-            val brunoAmount: Long   = (brunoNum * devAmount) / feeDenom
-            val pulsarzAmount: Long = (pulsarzNum * devAmount) / feeDenom
-            val phoenixAmount: Long = (phoenixNum * devAmount) / feeDenom
-            val kushtiAmount: Long  = (kushtiNum * devAmount) / feeDenom
+            val brunoAmount: Long   = ($brunoNum * devAmount) / feeDenom
+            val phoenixAmount: Long = ($phoenixNum * devAmount) / feeDenom
+            val kushtiAmount: Long  = ($kushtiNum * devAmount) / feeDenom
 
             val validBruno: Boolean   = (brunoBoxOUT.tokens.filter({ (t: (Coll[Byte], Long)) => t._1 == hodlTokenId })(0)._2 == brunoAmount) && (brunoBoxOUT.propositionBytes == brunoAddress.propBytes)
-            val validPulsarz: Boolean = (pulsarzBoxOUT.tokens.filter({ (t: (Coll[Byte], Long)) => t._1 == hodlTokenId })(0)._2 == pulsarzAmount) && (pulsarzBoxOUT.propositionBytes == pulsarzAddress.propBytes)
             val validPhoenix: Boolean = (phoenixBoxOUT.tokens.filter({ (t: (Coll[Byte], Long)) => t._1 == hodlTokenId })(0)._2 == phoenixAmount) && (phoenixBoxOUT.propositionBytes == phoenixAddress.propBytes)
             val validKushti: Boolean  = (kushtiBoxOUT.tokens.filter({ (t: (Coll[Byte], Long)) => t._1 == hodlTokenId })(0)._2 == kushtiAmount) && (kushtiBoxOUT.propositionBytes == kushtiAddress.propBytes)
 
             allOf(Coll(
                 validBruno,
-                validPulsarz,
                 validPhoenix,
                 validKushti
             ))
@@ -94,6 +89,6 @@
 
     }
 
-    sigmaProp(validFeeDistributionTx) && atLeast(1, Coll(brunoAddress, pulsarzAddress, phoenixAddress, kushtiAddress)) // Done so we are incentivized to not spam the miner fee.
+    sigmaProp(validFeeDistributionTx) && atLeast(1, Coll(brunoAddress, phoenixAddress, kushtiAddress)) // Done so we are incentivized to not spam the miner fee.
 
 }
