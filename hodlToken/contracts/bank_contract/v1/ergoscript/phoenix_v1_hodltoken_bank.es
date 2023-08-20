@@ -56,7 +56,7 @@
 
     // Bank Info
     val hodlTokensCircDelta: Long   = hodlTokensIn - hodlTokensOut // When minting hodlToken, this is the amount of coins the buyer gets.
-    val price: Long                 = (reserveIn.toBigInt * precisionFactor) / hodlTokensCircIn
+    val price: BigInt               = (reserveIn.toBigInt * precisionFactor) / hodlTokensCircIn
     val isMintTx: Boolean           = (hodlTokensCircDelta > 0L)
 
     val validBankRecreation: Boolean = {
@@ -67,7 +67,7 @@
 
         val validTokens: Boolean = {
 
-            val validBaseTokenId = (bankBoxOUT.tokens(2)._1 == SELF.tokens(2)._1)
+            val validBaseTokenId: Boolean = (bankBoxOUT.tokens(2)._1 == SELF.tokens(2)._1)
             val validBankSingleton: Boolean = (bankBoxOUT.tokens(0) == SELF.tokens(0))          // Singleton token amount never changes
             val validHodlCoinTokenId: Boolean = (bankBoxOUT.tokens(1)._1 == SELF.tokens(1)._1)
             val validHodlCoinTokenAmount: Boolean = (bankBoxOUT.tokens(1)._2 >= 1L)             // HodlToken token amount can change, but there must be 1 hodlerg inside the bank always
@@ -157,4 +157,5 @@
         sigmaProp(validBurnTx)
 
     }
+    
 }
