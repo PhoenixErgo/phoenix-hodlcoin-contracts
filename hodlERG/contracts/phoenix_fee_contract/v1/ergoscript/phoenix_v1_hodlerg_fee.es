@@ -1,7 +1,7 @@
 {
 
     // ===== Contract Information ===== //
-    // Name: Phoenix HodlCoin Fee
+    // Name: Phoenix HodlERG Fee
     // Description: Contract guarding the fee box for the HodlCoin protocol.
     // Version: 1.0.0
     // Author: Luca D'Angelo (ldgaetano@protonmail.com), MGPai

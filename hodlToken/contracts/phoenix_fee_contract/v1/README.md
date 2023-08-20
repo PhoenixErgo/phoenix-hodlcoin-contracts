@@ -1,7 +1,7 @@
-# Phoenix HodlERG: Fee Contract - v1.0.0
+# Phoenix HodlToken: Fee Contract - v1.0.0
 
 ## Contract
-- [ErgoScript](./ergoscript/phoenix_v1_hodlerg_fee.es)
+- [ErgoScript](./ergoscript/phoenix_v1_hodltoken_fee.es)
 
 ## Documentation
 
@@ -11,15 +11,14 @@ The percentage of the dev fee is split in the following way:
 - 0.25% -> Bruno
 - 0.25% -> Pulsarz
 - 0.25% -> Phoenix
-- 0.15% -> Kushti
-- 0.1% -> Kras
+- 0.25% -> Kushti
 
 ### Description
 Contract guarding the fee box of the HodlCoin protocol.
 
 ### Box Contents
 Tokens
-- None
+- 1. (HodlTokenId, HodlTokenFeeAmount)
 
 Registers
 - None

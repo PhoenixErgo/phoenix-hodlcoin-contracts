@@ -1,7 +1,7 @@
-# Phoenix HodlERG: Bank Contract - v1.0.0
+# Phoenix HodlToken: Bank Contract - v1.0.0
 
 ## Contract
-- [ErgoScript](./ergoscript/phoenix_v1_hodlerg_bank.es)
+- [ErgoScript](./ergoscript/phoenix_v1_hodltoken_bank.es)
 
 ## Documentation
 
@@ -11,7 +11,7 @@ Contract for the bank box of the HodlCoin protocol.
 ### Box Contents
 Tokens
 1. (BankSingletonId, 1)
-2. (HodlERGTokenId, HodlERGTokenAmount)
+2. (HodlCoinTokenId, HodlCoinTokenAmount)
 
 Registers
 - R4: Long          TotalTokenSupply
