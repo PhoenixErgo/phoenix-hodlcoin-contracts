@@ -6,7 +6,7 @@
 ## Documentation
 
 ### Description
-Contract for the bank box of the HodlCoin protocol.
+Contract for the bank box of the hodlERG protocol.
 
 ### Box Contents
 Tokens
@@ -35,5 +35,5 @@ Registers
 ### Compile Time Constants ($)
 - $phoenixFeeContractBytesHash: Coll[Byte]
 
-### Context Variables (@)
+### Context Variables (_)
 - None

@@ -6,11 +6,11 @@
 ## Documentation
 
 ### Description
-Contract guarding the proxy box of the HodlCoin protocol.
+Contract guarding the proxy box of the hodlToken protocol.
 
 ### Box Contents
 Tokens
-- (HodlCoinTokenId, HodlCoinTokenAmount) if burning hodlCoin tokens.
+- (HodlTokenId, HodlTokenAmount) if burning hodlCoin tokens.
 
 Registers
 - R4: SigmaProp     BuyerPK
@@ -40,5 +40,5 @@ Registers
 ### Compile Time Constants ($)
 - $minTxOperatorFee: Long
 
-### Context Variables (@)
+### Context Variables (_)
 - None

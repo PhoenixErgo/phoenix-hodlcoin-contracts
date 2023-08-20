@@ -2,7 +2,7 @@
 
     // ===== Contract Information ===== //
     // Name: Phoenix HodlToken Fee
-    // Description: Contract guarding the fee box for the HodlToken protocol.
+    // Description: Contract guarding the fee box for the hodlToken protocol.
     // Version: 1.0.0
     // Author: Luca D'Angelo (ldgaetano@protonmail.com), MGPai
 
@@ -26,7 +26,7 @@
     // $phoenixNum: Long
     // $kushtiNum: Long
 
-    // ===== Context Variables (@) ===== //
+    // ===== Context Variables (_) ===== //
     // None
 
     // ===== Relevant Variables ===== //
