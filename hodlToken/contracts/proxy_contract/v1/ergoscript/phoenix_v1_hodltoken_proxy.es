@@ -88,7 +88,7 @@
 
             val expectedAmountDeposited: Long = (hodlTokensCircDelta * price) / precisionFactor
 
-            val validProxyValue: Boolean = (SELF.tokens(0)._2 - minBoxValue - minerFee - txOperatorFee >= expectedAmountDeposited)
+            val validProxyValue: Boolean = (SELF.tokens(0)._2 >= expectedAmountDeposited)
 
             val validBuyerBoxOUT: Boolean = {
 
@@ -99,7 +99,7 @@
             allOf(Coll(
                 validValue,
                 validContract,
-                validHodlCoinTransfer
+                validHodlTokenTransfer
             ))
 
         }
