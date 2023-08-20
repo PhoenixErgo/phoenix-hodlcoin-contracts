@@ -156,11 +156,11 @@
 
                 val validBuyerBoxOUT: Boolean = {
 
-                    val validERGTransfer: Boolean = (buyerPKBoxOUT.tokens(0)._2 == expectedAmountWithdrawn)
+                    val validBaseTokenTransfer: Boolean = (buyerPKBoxOUT.tokens(0)._2 == expectedAmountWithdrawn)
                     val validContract: Boolean = (buyerPKBoxOUT.propositionBytes == buyerPK.propBytes)
 
                     allOf(Coll(
-                        validERGTransfer,
+                        validBaseTokenTransfer,
                         validContract
                     ))
 
