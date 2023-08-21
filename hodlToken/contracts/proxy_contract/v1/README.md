@@ -10,7 +10,7 @@ Contract guarding the proxy box of the hodlToken protocol.
 
 ### Box Contents
 Tokens
-- (HodlTokenId, HodlTokenAmount) if burning hodlCoin tokens.
+1. (HodlTokenId, HodlTokenAmount) if burning hodlCoin tokens.
 
 Registers
 - R4: SigmaProp     BuyerPK

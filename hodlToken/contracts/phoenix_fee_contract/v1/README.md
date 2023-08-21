@@ -10,7 +10,7 @@ Contract guarding the fee box of the hodlToken protocol.
 
 ### Box Contents
 Tokens
-- 1. (HodlTokenId, HodlTokenFeeAmount)
+1. (HodlTokenId, HodlTokenFeeAmount)
 
 Registers
 - None

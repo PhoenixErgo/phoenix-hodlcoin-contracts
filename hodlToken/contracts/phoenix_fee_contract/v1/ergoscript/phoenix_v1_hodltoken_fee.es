@@ -33,7 +33,7 @@
     // ===== Relevant Variables ===== //
     val minerFeeErgoTreeBytesHash: Coll[Byte] = fromBase16("e540cceffd3b8dd0f401193576cc413467039695969427df94454193dddfb375")
 
-    val feeDenom: Long   = 100L
+    val feeDenom: Long = 100L
 
     val brunoAddress: SigmaProp   = PK("9gnBtmSRBMaNTkLQUABoAqmU2wzn27hgqVvezAC9SU1VqFKZCp8")
     val phoenixAddress: SigmaProp = PK("9iPs1ujGj2eKXVg82aGyAtUtQZQWxFaki48KFixoaNmUAoTY6wV")
@@ -48,11 +48,19 @@
         val kushtiBoxOUT: Box   = OUTPUTS(2)
         val minerFeeBoxOUT: Box = OUTPUTS(3)
 
-        val devAmount: Long = OUTPUTS
-                                .flatMap { (o: Box) =>
-                                o.tokens.filter { (token: (Coll[Byte], Long)) => token._1 == $baseTokenId }.map{(token: (Coll[Byte], Long)) => token._2 }
-                                }
-                                .fold(0L, { (a: Long, b: Long) => a + b })
+        val devAmount: Long = OUTPUTS.flatMap({ (output: Box) =>
+
+            output.tokens.filter({ (token: (Coll[Byte], Long)) => 
+        
+                token._1 == $baseTokenId 
+        
+            }).map({ (token: (Coll[Byte], Long)) => 
+        
+                token._2 
+        
+            }) 
+        
+        }).fold(0L, { (acc: Long, curr: Long) => acc + curr })
 
         val validDevBoxes: Boolean = {
 
@@ -60,9 +68,9 @@
             val phoenixAmount: Long = ($phoenixNum * devAmount) / feeDenom
             val kushtiAmount: Long  = ($kushtiNum * devAmount) / feeDenom
 
-            val validBruno: Boolean   = (brunoBoxOUT.tokens(0) == ($baseTokenId, brunoAmount)) && (brunoBoxOUT.propositionBytes == brunoAddress.propBytes)
-            val validPhoenix: Boolean = (phoenixBoxOUT.tokens(0) == ($baseTokenId, phoenixAmount)) && (phoenixBoxOUT.propositionBytes == phoenixAddress.propBytes)
-            val validKushti: Boolean  = (kushtiBoxOUT.tokens(0) == ($baseTokenId, kushtiAmount)) && (kushtiBoxOUT.propositionBytes == kushtiAddress.propBytes)
+            val validBruno: Boolean   = (brunoBoxOUT.tokens(0)._1 == $baseTokenId) && (brunoBoxOUT.tokens(0)._2 >= brunoAmount) && (brunoBoxOUT.propositionBytes == brunoAddress.propBytes)
+            val validPhoenix: Boolean = (phoenixBoxOUT.tokens(0)._1 == $baseTokenId) && (phoenixBoxOUT.tokens(0)._2 >= phoenixAmount) && (phoenixBoxOUT.propositionBytes == phoenixAddress.propBytes)
+            val validKushti: Boolean  = (kushtiBoxOUT.tokens(0)._1 == $baseTokenId) && (kushtiBoxOUT.tokens(0)._2 >= kushtiAmount) && (kushtiBoxOUT.propositionBytes == kushtiAddress.propBytes)
 
             allOf(Coll(
                 validBruno,
@@ -76,7 +84,8 @@
 
             allOf(Coll(
                 (minerFeeBoxOUT.value >= $minerFee), // In case the miner fee increases in the future
-                (blake2b256(minerFeeBoxOUT.propositionBytes) == minerFeeErgoTreeBytesHash)
+                (blake2b256(minerFeeBoxOUT.propositionBytes) == minerFeeErgoTreeBytesHash),
+                (minerFeeBoxOUT.tokens.size == 0)
             ))
 
         }
