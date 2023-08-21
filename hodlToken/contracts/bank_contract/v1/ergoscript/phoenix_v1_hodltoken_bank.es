@@ -112,29 +112,7 @@
             val expectedAmountDeposited: Long = (hodlTokensCircDelta * price) / precisionFactor // Price of hodlCoin in nanoERG.
 
             val validTokenDeposit: Boolean = (reserveOut >= reserveIn + expectedAmountDeposited)
-                // Ensure that the buyer receives the total value of box.
-                val validValueTransfer: Boolean = {
-
-                    OUTPUTS.map({ (o: Box) => 
-                        if (o.propositionBytes == buyerPK.propBytes) o.value else 0L
-                    }).fold(0L, { (a: Long, b: Long) => a + b }) >= SELF.value
-
-                }
-
-                // If the box has tokens in it, all must go to buyer.
-                val validTokenTransfer: Boolean = {
-
-                    if(SELF.tokens.size > 0) {
-
-                        OUTPUTS.exists({ (o: Box) =>
-                            (o.tokens == SELF.tokens) && (o.propositionBytes == buyerPK.propBytes)
-                        })
-                        
-                    } else {
-                        true
-                    }
-
-                }
+               
             allOf(Coll(
                 validBankRecreation,
                 validTokenDeposit
