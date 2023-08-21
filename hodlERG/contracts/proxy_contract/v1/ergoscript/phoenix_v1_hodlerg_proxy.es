@@ -48,7 +48,7 @@
     val minerFee: Long                          = SELF.R8[Long].get
     val txOperatorFee: Long                     = SELF.R9[Long].get
     val minerFeeErgoTreeBytesHash: Coll[Byte]   = fromBase16("e540cceffd3b8dd0f401193576cc413467039695969427df94454193dddfb375")
-    val isValidBank: Boolean                    = (INPUTS(0).tokens.size > 1 && INPUTS(0).tokens(0)._1 == bankSingletonTokenId) && (INPUTS(0).tokens(1)._1 == hodlCoinTokenId)
+    val isValidBank: Boolean                    = (INPUTS(0).tokens.size > 1 && INPUTS(0).tokens(0)._1 == bankSingletonTokenId) && (INPUTS(0).tokens(1)._1 == hodlERGTokenId)
 
     if (isValidBank) {
 

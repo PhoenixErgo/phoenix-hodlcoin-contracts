@@ -15,7 +15,7 @@ Tokens
 Registers
 - R4: SigmaProp     BuyerPK
 - R5: Coll[Byte]    BankSingletonTokenId
-- R6: Coll[Byte]    HodlCoinTokenId
+- R6: Coll[Byte]    HodlTokenId
 - R7: Long          MinBoxValue
 - R8: Long          MinerFee
 - R9: Long          TxOperatorFee
