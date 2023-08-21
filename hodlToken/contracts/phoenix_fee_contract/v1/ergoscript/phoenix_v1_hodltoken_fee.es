@@ -9,7 +9,6 @@
     // ===== Box Contents ===== //
     // Tokens
     // 1. (baseTokenId, baseTokenAmount)
-    // None
     // Registers
     // None
 
