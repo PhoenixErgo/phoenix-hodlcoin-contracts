@@ -8,7 +8,7 @@
 
     // ===== Box Contents ===== //
     // Tokens
-    // 1. (HodlTokenId, HoldTokenFeeAmount)
+    // 1. (baseTokenId, baseTokenAmount)
     // None
     // Registers
     // None
@@ -17,10 +17,11 @@
     // 1. Fee Distribution Tx
     // Inputs: PhoenixFee1, ... , PhoenixFeeM
     // DataInputs: None
-    // Outputs: Bruno, Pulsarz, Phoenix, Kushti, Kras, MinerFee
+    // Outputs: Bruno, Phoenix, Kushti, MinerFee
     // Context Variables: None
 
     // ===== Compile Time Constants ($) ===== //
+    // $baseTokenId: Coll[Byte]
     // $minerFee: Long
     // $brunoNum: Long
     // $phoenixNum: Long
@@ -32,10 +33,9 @@
     // ===== Relevant Variables ===== //
     val minerFeeErgoTreeBytesHash: Coll[Byte] = fromBase16("e540cceffd3b8dd0f401193576cc413467039695969427df94454193dddfb375")
 
-    val hodlTokenId: Coll[Byte] = SELF.tokens(0)._1
     val feeDenom: Long   = 100L
 
-    val brunoAddress: SigmaProp   = PK("9exfustUCPDKXsfDrGNrmtkyLDwAie2rKKdUsPVa26RuBFaYeCL")
+    val brunoAddress: SigmaProp   = PK("9gnBtmSRBMaNTkLQUABoAqmU2wzn27hgqVvezAC9SU1VqFKZCp8")
     val phoenixAddress: SigmaProp = PK("9iPs1ujGj2eKXVg82aGyAtUtQZQWxFaki48KFixoaNmUAoTY6wV")
     val kushtiAddress: SigmaProp  = PK("9iE2MadGSrn1ivHmRZJWRxzHffuAk6bPmEv6uJmPHuadBY8td5u")
 
@@ -44,13 +44,15 @@
 
         // Outputs
         val brunoBoxOUT: Box    = OUTPUTS(0)
-        val pulsarzBoxOUT: Box  = OUTPUTS(1)
-        val phoenixBoxOUT: Box  = OUTPUTS(2)
-        val kushtiBoxOUT: Box   = OUTPUTS(3)
-        val krasBoxOUT: Box     = OUTPUTS(4)
-        val minerFeeBoxOUT: Box = OUTPUTS(5)
+        val phoenixBoxOUT: Box  = OUTPUTS(1)
+        val kushtiBoxOUT: Box   = OUTPUTS(2)
+        val minerFeeBoxOUT: Box = OUTPUTS(3)
 
-        val devAmount: Long = OUTPUTS.map({ (output: Box) => if (output.tokens(0)._1 == hodlTokenId) output.tokens(0)._2 else 0L }).fold(0L, { (acc: Long, curr: Long) => acc + curr })
+        val devAmount: Long = OUTPUTS
+                                .flatMap { (o: Box) =>
+                                o.tokens.filter { (token: (Coll[Byte], Long)) => token._1 == $baseTokenId }.map{(token: (Coll[Byte], Long)) => token._2 }
+                                }
+                                .fold(0L, { (a: Long, b: Long) => a + b })
 
         val validDevBoxes: Boolean = {
 
@@ -58,9 +60,9 @@
             val phoenixAmount: Long = ($phoenixNum * devAmount) / feeDenom
             val kushtiAmount: Long  = ($kushtiNum * devAmount) / feeDenom
 
-            val validBruno: Boolean   = (brunoBoxOUT.tokens.filter({ (t: (Coll[Byte], Long)) => t._1 == hodlTokenId })(0)._2 == brunoAmount) && (brunoBoxOUT.propositionBytes == brunoAddress.propBytes)
-            val validPhoenix: Boolean = (phoenixBoxOUT.tokens.filter({ (t: (Coll[Byte], Long)) => t._1 == hodlTokenId })(0)._2 == phoenixAmount) && (phoenixBoxOUT.propositionBytes == phoenixAddress.propBytes)
-            val validKushti: Boolean  = (kushtiBoxOUT.tokens.filter({ (t: (Coll[Byte], Long)) => t._1 == hodlTokenId })(0)._2 == kushtiAmount) && (kushtiBoxOUT.propositionBytes == kushtiAddress.propBytes)
+            val validBruno: Boolean   = (brunoBoxOUT.tokens(0) == ($baseTokenId, brunoAmount)) && (brunoBoxOUT.propositionBytes == brunoAddress.propBytes)
+            val validPhoenix: Boolean = (phoenixBoxOUT.tokens(0) == ($baseTokenId, phoenixAmount)) && (phoenixBoxOUT.propositionBytes == phoenixAddress.propBytes)
+            val validKushti: Boolean  = (kushtiBoxOUT.tokens(0) == ($baseTokenId, kushtiAmount)) && (kushtiBoxOUT.propositionBytes == kushtiAddress.propBytes)
 
             allOf(Coll(
                 validBruno,
@@ -79,7 +81,7 @@
 
         }
 
-        val validOutputSize: Boolean = (OUTPUTS.size == 6)
+        val validOutputSize: Boolean = (OUTPUTS.size == 4)
 
         allOf(Coll(
             validDevBoxes,
