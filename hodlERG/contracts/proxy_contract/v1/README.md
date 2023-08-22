@@ -10,7 +10,7 @@ Contract guarding the proxy box of the hodlERG protocol.
 
 ### Box Contents
 Tokens
-- (HodlERGTokenId, HodlERGTokenAmount) if burning hodlERG tokens.
+1. (HodlERGTokenId, HodlERGTokenAmount) if burning hodlERG tokens.
 
 Registers
 - R4: SigmaProp     BuyerPK
