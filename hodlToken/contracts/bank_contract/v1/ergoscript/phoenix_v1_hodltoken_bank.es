@@ -75,10 +75,10 @@
 
             allOf(Coll(
                 validBankSingleton,
-                validHodlCoinTokenId,
-                validHodlCoinTokenAmount,
+                validHodlTokenId,
+                validHodlTokenAmount,
                 validBaseTokenId,
-                validBaseTokenMinBankvalue
+                validBaseTokenMinBankValue
             ))
 
         }
@@ -112,7 +112,7 @@
             val expectedAmountDeposited: Long = (hodlTokensCircDelta * price) / precisionFactor // Price of hodlCoin in nanoERG.
 
             val validTokenDeposit: Boolean = (reserveOut >= reserveIn + expectedAmountDeposited)
-               
+
             allOf(Coll(
                 validBankRecreation,
                 validTokenDeposit
@@ -159,5 +159,5 @@
         sigmaProp(validBurnTx)
 
     }
-    
+
 }
