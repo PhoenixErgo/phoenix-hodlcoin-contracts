@@ -29,6 +29,7 @@
     // Data Inputs: None
     // Outputs: Bank, BuyerPK, PhoenixFee, MinerFee, TxOperatorFee
     // Context Variables: None
+    // 3. Reserve Deposit Tx
 
     // ===== Compile Time Constants ($) ===== //
     // $phoenixFeeContractBytesHash: Coll[Byte]
@@ -36,9 +37,25 @@
     // ===== Context Variables (_) ===== //
     // None
 
+    // ===== User Defined Methods ===== //
+    // divUp: ((BigInt, BigInt) => BigInt) Integer division, rounded up.
+    
+    def divUp(operands: (BigInt, BigInt)): BigInt = {
+
+        val a: BigInt = operands._1 // Dividend
+        val b: BigInt = operands._2 // Divisor
+
+        if (b == 0.toBigInt) {
+            return -1.toBigInt
+        } else {
+            return (a + (b-1.toBigInt)) / b
+        }
+
+    } 
+
     // ===== Relevant Variables ===== //
     val totalTokenSupply: Long      = SELF.R4[Long].get
-    val precisionFactor: Long       = SELF.R5[Long].get
+    val precisionFactor: Long       = SELF.R5[Long].get // If the token does not have decimals, i.e. decimals = 0 when minted, then the precision factor should be set to 1.
     val minBankValue: Long          = SELF.R6[Long].get
     val devFeeNum: Long             = SELF.R7[Long].get
     val bankFeeNum: Long            = SELF.R8[Long].get
@@ -128,23 +145,41 @@
         val validBurnTx: Boolean = {
 
             val hodlTokensBurned: Long = hodlTokensOut - hodlTokensIn
-            val expectedAmountBeforeFees: Long = (hodlTokensBurned * price) / precisionFactor
-            val bankFeeAmount: Long = (expectedAmountBeforeFees * bankFeeNum) / feeDenom
-            val devFeeAmount: Long = (expectedAmountBeforeFees * devFeeNum) / feeDenom
-            val expectedUserAmount: Long = expectedAmountBeforeFees - bankFeeAmount - devFeeAmount // The buyer never gets the bankFeeAmount since it remains in the bank box.
+            val expectedAmountBeforeFees: Long = (hodlTokensBurned * price) / precisionFactor // X
+            
+            val dividend_1: BigInt = (expectedAmountBeforeFees.toBigInt * (bankFeeNum.toBigInt + devFeeNum.toBigInt))
+            val divisor_1: BigInt = feeDenom.toBigInt // This is never zero.
+        
+            val bankAndDevFeeAmount: BigInt = divUp((dividend_1, divisor_1)) // Y
 
-            val validBankWithdraw: Boolean = (reserveOut == reserveIn - expectedAmountBeforeFees + bankFeeAmount)
+            val dividend_2: BigInt = (bankAndDevFeeAmount.toBigInt * devFeeNum.toBigInt)
+            val divisor_2: BigInt = (bankFeeNum.toBigInt + devFeeNum.toBigInt) // This is never zero, devFeeNum can be zero but bankFeeNum cannot.
 
-            // Outputs
-            val phoenixFeeBoxOUT: Box = OUTPUTS(2)
+            val devFeeAmount: BigInt = divUp((dividend_2, divisor_2)) // Z
+            val bankFeeAmount: BigInt = bankAndDevFeeAmount - devFeeAmount // Y - Z
+
+            val devFeeAmountAdjusted: BigInt = if (bankFeeAmount == 0.toBigInt) 0.toBigInt else devFeeAmount
+            val bankFeeAmountAdjusted: BigInt = if (bankFeeAmount == 0.toBigInt) devFeeAmount else bankFeeAmount
+
+            val expectedUserAmount: BigInt = expectedAmountBeforeFees - bankFeeAndDevFeeAmount // X - Y, The buyer never gets the bankFeeAmount since it remains in the bank box.
+
+            val validBankWithdraw: Boolean = (reserveOut.toBigInt == reserveIn.toBigInt - expectedAmountBeforeFees + bankFeeAmountAdjusted)
 
             val validPhoenixFee: Boolean = {
 
-                allOf(Coll(
-                    (phoenixFeeBoxOUT.tokens(0)._1 == SELF.tokens(2)._1),
-                    (phoenixFeeBoxOUT.tokens(0)._2 == devFeeAmount),
-                    (blake2b256(phoenixFeeBoxOUT.propositionBytes) == $phoenixFeeContractBytesHash)
-                ))
+                if (devFeeAmountAdjusted != 0.toBigInt) {
+
+                    val phoenixFeeBoxOUT: Box = OUTPUTS(2)
+
+                    allOf(Coll(
+                        (phoenixFeeBoxOUT.tokens(0)._1 == SELF.tokens(2)._1),
+                        (phoenixFeeBoxOUT.tokens(0)._2 == devFeeAmountAdjusted),
+                        (blake2b256(phoenixFeeBoxOUT.propositionBytes) == $phoenixFeeContractBytesHash)
+                    ))
+
+                } else {
+                    true
+                }
 
             }
 

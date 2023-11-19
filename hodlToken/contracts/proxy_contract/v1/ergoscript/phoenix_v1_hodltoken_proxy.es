@@ -44,7 +44,7 @@
     // ===== Relevant Variables ===== //
     val buyerPK: SigmaProp                      = SELF.R4[SigmaProp].get
     val bankSingletonTokenId: Coll[Byte]        = SELF.R5[Coll[Byte]].get
-    val hodlTokenId: Coll[Byte]             = SELF.R6[Coll[Byte]].get
+    val hodlTokenId: Coll[Byte]                 = SELF.R6[Coll[Byte]].get
     val minBoxValue: Long                       = SELF.R7[Long].get
     val minerFee: Long                          = SELF.R8[Long].get
     val txOperatorFee: Long                     = SELF.R9[Long].get
