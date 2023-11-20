@@ -38,8 +38,9 @@
     // None
 
     // ===== User Defined Methods ===== //
-    // divUp: ((BigInt, BigInt) => BigInt) Integer division, rounded up.
-    
+    // divUp: (BigInt, BigInt) => BigInt
+
+    // Integer division, rounded up.
     def divUp(operands: (BigInt, BigInt)): BigInt = {
 
         val a: BigInt = operands._1 // Dividend
