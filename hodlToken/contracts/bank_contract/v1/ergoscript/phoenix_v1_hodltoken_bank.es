@@ -47,9 +47,9 @@
         val b: BigInt = operands._2 // Divisor
 
         if (b == 0.toBigInt) {
-            return -1.toBigInt
+            -1.toBigInt
         } else {
-            return (a + (b-1.toBigInt)) / b
+            (a + (b-1.toBigInt)) / b
         }
 
     } 
@@ -87,9 +87,9 @@
 
             val validBankSingleton: Boolean = (bankBoxOUT.tokens(0) == SELF.tokens(0))          // Singleton token amount never changes
             val validHodlTokenId: Boolean = (bankBoxOUT.tokens(1)._1 == SELF.tokens(1)._1)
-            val validHodlTokenAmount: Boolean = (bankBoxOUT.tokens(1)._2 >= 1L)                 // HodlToken token amount can change, but there must be 1 hodlerg inside the bank always
+            val validHodlTokenAmount: Boolean = (hodlTokensOut >= 1L)                           // HodlToken token amount can change, but there must be 1 hodlerg inside the bank always
             val validBaseTokenId: Boolean = (bankBoxOUT.tokens(2)._1 == SELF.tokens(2)._1)
-            val validBaseTokenMinBankValue: Boolean = (bankBoxOUT.tokens(2)._2 >= minBankValue) // The bank must have a minimum value of the base token.
+            val validBaseTokenMinBankValue: Boolean = (reserveOut >= minBankValue)              // The bank must have a minimum value of the base token.
 
             allOf(Coll(
                 validBankSingleton,
@@ -151,7 +151,7 @@
             val dividend_1: BigInt = (expectedAmountBeforeFees.toBigInt * (bankFeeNum.toBigInt + devFeeNum.toBigInt))
             val divisor_1: BigInt = feeDenom.toBigInt // This is never zero.
         
-            val bankAndDevFeeAmount: BigInt = divUp((dividend_1, divisor_1)) // Y
+            val bankFeeAndDevFeeAmount: BigInt = divUp((dividend_1, divisor_1)) // Y
 
             val dividend_2: BigInt = (bankAndDevFeeAmount.toBigInt * devFeeNum.toBigInt)
             val divisor_2: BigInt = (bankFeeNum.toBigInt + devFeeNum.toBigInt) // This is never zero, devFeeNum can be zero but bankFeeNum cannot.

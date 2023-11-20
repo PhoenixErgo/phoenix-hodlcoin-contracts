@@ -81,7 +81,7 @@
 
         // Bank Output
         val bankBoxOUT: Box     = OUTPUTS(0)
-        val reserveOut: Long    = bankBoxIN.tokens(2)._2
+        val reserveOut: Long    = bankBoxOUT.tokens(2)._2
         val hodlTokensOut: Long = bankBoxOUT.tokens(1)._2
 
         // Bank Info
@@ -98,7 +98,7 @@
                
                 val txOperatorFeeBoxOUT: Box = OUTPUTS(OUTPUTS.size-1)
 
-                val expectedAmountDeposited: Long = bankBoxOUT.tokens(2)._2 - bankBoxIN.tokens(2)._2
+                val expectedAmountDeposited: Long = reserveOut - reserveIn
 
                 val validBuyerBoxOUT: Boolean = {
 
@@ -145,7 +145,7 @@
                 val txOperatorFeeBoxOUT: Box = OUTPUTS(OUTPUTS.size-1)
 
                 val hodlTokensBurned: Long = hodlTokensOut - hodlTokensIn
-                val devAndUserAmount: Long = bankBoxIN.tokens(2)._2 - bankBoxOUT.tokens(2)._2
+                val devAndUserAmount: Long = reserveIn - reserveOut // Base tokens are removed from the bank.
                 val devAmount: Long = if (OUTPUTS.size == 5) OUTPUTS(2).tokens(0)._2 else 0L // OUTPUTS(2) is phoenixFeeBoxOUT, if there are 5 total outputs.
                 val userAmount: Long = buyerPKBoxOUT.tokens(0)._2
 
