@@ -30,7 +30,10 @@
     // Outputs: Bank, BuyerPK, PhoenixFee, MinerFee, TxOperatorFee
     // Context Variables: None
     // 3. Reserve Deposit Tx
-    // TODO: Insert documentation here and implmement proxy logic.
+    // Inputs: Bank, Proxy
+    // Data Input: None
+    // Outputs: Bank, MinerFee, TxOperatorFee
+    // Context Variables: None
     // 4. Refund Tx
     // Inputs: Proxy
     // Data Inputs: None
@@ -87,6 +90,8 @@
         // Bank Info
         val hodlTokensCircDelta: Long = hodlTokensIn - hodlTokensOut
         val isMintTx: Boolean         = (hodlTokensCircDelta > 0L)
+        val isBurnTx: Boolean         = (hodlTokensCircDelta < 0L)
+        val isDepositTx: Boolean      = (hodlTokensCircDelta == 0L)
 
         // Outputs
         val buyerPKBoxOUT: Box = OUTPUTS(1)
@@ -136,7 +141,7 @@
 
             sigmaProp(validMintTx)
 
-        } else {
+        } else if (isBurnTx) {
 
             // ===== Burn Tx ===== //
             val validBurnTx: Boolean = {
@@ -184,6 +189,39 @@
             sigmaProp(validBurnTx)
 
         }
+
+    } else if (isDepositTx) {
+
+        // ===== Reserve Deposit Tx ===== //
+        val validReserveDepositTx: Boolean = {
+                  
+            val txOperatorFeeBoxOUT: Box = OUTPUTS(OUTPUTS.size-1)
+
+            val expectedAmountDeposited: Long = reserveOut - reserveIn
+
+            val validReserveDeposit: Boolean = (SELF.tokens(0)._2 == expectedAmountDeposited)
+
+            val validTxOperatorFee: Boolean = {
+
+                allOf(Coll(
+                    (txOperatorFee >= $minTxOperatorFee),
+                    (txOperatorFeeBoxOUT.value == txOperatorFee)
+                ))
+
+            }
+
+            val validOutputSize: Boolean = (OUTPUTS.size == 3)
+
+            allOf(Coll(
+                validReserveDeposit,
+                validMinerFee(minerFee),
+                validTxOperatorFee,
+                validOutputSize
+            ))
+
+        }
+
+        sigmaProp(validReserveDepositTx)
 
     } else {
 
