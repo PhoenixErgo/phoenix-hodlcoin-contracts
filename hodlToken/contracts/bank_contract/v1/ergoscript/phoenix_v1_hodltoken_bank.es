@@ -153,11 +153,11 @@
         
             val bankFeeAndDevFeeAmount: BigInt = divUp((dividend_1, divisor_1)) // Y
 
-            val dividend_2: BigInt = (bankAndDevFeeAmount.toBigInt * devFeeNum.toBigInt)
+            val dividend_2: BigInt = (bankFeeAndDevFeeAmount.toBigInt * devFeeNum.toBigInt)
             val divisor_2: BigInt = (bankFeeNum.toBigInt + devFeeNum.toBigInt) // This is never zero, devFeeNum can be zero but bankFeeNum cannot.
 
             val devFeeAmount: BigInt = divUp((dividend_2, divisor_2)) // Z
-            val bankFeeAmount: BigInt = bankAndDevFeeAmount - devFeeAmount // Y - Z
+            val bankFeeAmount: BigInt = bankFeeAndDevFeeAmount - devFeeAmount // Y - Z
 
             val devFeeAmountAdjusted: BigInt = if (bankFeeAmount == 0.toBigInt) 0.toBigInt else devFeeAmount
             val bankFeeAmountAdjusted: BigInt = if (bankFeeAmount == 0.toBigInt) devFeeAmount else bankFeeAmount
