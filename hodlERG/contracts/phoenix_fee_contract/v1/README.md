@@ -12,7 +12,7 @@ The percentage of the dev fee is split in the following way:
 - 25% -> Pulsarz
 - 25% -> Phoenix
 - 15% -> Kushti
-- 1% -> Kras
+- 10% -> Kras
 
 ### Description
 Contract guarding the fee box of the hodlERG protocol.
