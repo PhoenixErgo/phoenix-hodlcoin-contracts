@@ -206,7 +206,12 @@
         // ===== Reseve Deposit Tx ===== //
         val validReserveDepositTx: Boolean = {
 
-           (reserveOut > reserveIn) // The bank baseToken reserve must increase, nothing else happens.
+           val validReserveIncrease: Boolean = (reserveOut > reserveIn) // The bank baseToken reserve must increase, nothing else happens.
+
+           allOf(Coll(
+            validBankRecreation,
+            validReserveIncrease
+           ))
 
         }
 
