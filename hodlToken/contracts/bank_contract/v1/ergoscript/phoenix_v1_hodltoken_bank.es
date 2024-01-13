@@ -30,6 +30,10 @@
     // Outputs: Bank, BuyerPK, PhoenixFee, MinerFee, TxOperatorFee
     // Context Variables: None
     // 3. Reserve Deposit Tx
+    // Inputs: Bank, Proxy
+    // Data Input: None
+    // Outputs: Bank, MinerFee, TxOperatorFee
+    // Context Variables: None
 
     // ===== Compile Time Constants ($) ===== //
     // $phoenixFeeContractBytesHash: Coll[Byte]
@@ -73,9 +77,11 @@
     val hodlTokensOut: Long  = bankBoxOUT.tokens(1)._2
 
     // Bank Info
-    val hodlTokensCircDelta: Long   = hodlTokensIn - hodlTokensOut // When minting hodlToken, this is the amount of coins the buyer gets.
+    val hodlTokensCircDelta: Long   = hodlTokensIn - hodlTokensOut                                  // When minting hodlToken, this is the amount of coins the buyer gets.
     val price: BigInt               = (reserveIn.toBigInt * precisionFactor) / hodlTokensCircIn
-    val isMintTx: Boolean           = (hodlTokensCircDelta > 0L)
+    val isMintTx: Boolean           = (hodlTokensCircDelta > 0L)                                    // hodlToken supply increases + baseToken reserve increases
+    val isBurnTx: Boolean           = (hodlTokensCircDelta < 0L)                                    // hodlToken supply decreases + baseToken reserve decreases
+    val isDepositTx: Boolean        = (hodlTokensCircDelta == 0L)                                   // baseToken reserve increases
 
     val validBankRecreation: Boolean = {
 
@@ -140,7 +146,7 @@
 
         sigmaProp(validMintTx)
 
-    } else {
+    } else if (isBurnTx) {
 
         // ===== Burn Tx ===== //
         val validBurnTx: Boolean = {
@@ -194,6 +200,19 @@
 
         sigmaProp(validBurnTx)
 
+    } else if (isDepositTx) {
+
+        // ===== Reseve Deposit Tx ===== //
+        val validReserveDepositTx: Boolean = {
+
+           (reserveOut > reserveIn) // The bank baseToken reserve must increase, nothing else happens.
+
+        }
+
+        sigmaProp(validReserveDepositTx)
+
+    } else {
+        sigmaProp(false)
     }
 
 }
