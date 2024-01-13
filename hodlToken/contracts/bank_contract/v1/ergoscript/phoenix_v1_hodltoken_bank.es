@@ -64,7 +64,7 @@
     val minBankValue: Long          = SELF.R6[Long].get
     val devFeeNum: Long             = SELF.R7[Long].get
     val bankFeeNum: Long            = SELF.R8[Long].get
-    val feeDenom: Long              = 1000L
+    val feeDenom: BigInt            = 1000.toBigInt
 
     // Bank Input
     val hodlTokensIn: Long       = SELF.tokens(1)._2                // hodlToken token amount in the bank box.
@@ -155,7 +155,7 @@
             val expectedAmountBeforeFees: Long = (hodlTokensBurned * price) / precisionFactor // X: Here we convert the amount of hodlTokens burned into the amount of base tokens released from the bank.
             
             val dividend_1: BigInt = (expectedAmountBeforeFees.toBigInt * (bankFeeNum.toBigInt + devFeeNum.toBigInt)) // Here we want to determine the amount allocated to the bank and to the developers.
-            val divisor_1: BigInt = feeDenom.toBigInt // This is never zero.
+            val divisor_1: BigInt = feeDenom // This is never zero.
         
             val bankFeeAndDevFeeAmount: BigInt = divUp((dividend_1, divisor_1)) // Y: Here we use the divUp method to perform integer division in order to compute the combined bank fee and developer fee without integer division errors.
 
