@@ -78,7 +78,8 @@
 
     // Bank Info
     val hodlTokensCircDelta: Long   = hodlTokensIn - hodlTokensOut                                  // When minting hodlToken, this is the amount of coins the buyer gets.
-    val price: BigInt               = (reserveIn.toBigInt * precisionFactor) / hodlTokensCircIn
+    val priceNumerator: BigInt      = reserveIn.toBigInt
+    val priceDenominator: BigInt    = hodlTokensCircIn
     val isMintTx: Boolean           = (hodlTokensCircDelta > 0L)                                    // hodlToken supply increases + baseToken reserve increases
     val isBurnTx: Boolean           = (hodlTokensCircDelta < 0L)                                    // hodlToken supply decreases + baseToken reserve decreases
     val isDepositTx: Boolean        = (hodlTokensCircDelta == 0L)                                   // baseToken reserve increases
@@ -133,7 +134,7 @@
         // ===== Mint Tx ===== //
         val validMintTx: Boolean = {
 
-            val expectedAmountDeposited: Long = (hodlTokensCircDelta * price) / precisionFactor // Price of hodlCoin in nanoERG.
+            val expectedAmountDeposited: Long = divUp((hodlTokensCircDelta * priceNumerator), priceDenominator) // Price of hodlCoin in nanoERG.
 
             val validTokenDeposit: Boolean = (reserveOut >= reserveIn + expectedAmountDeposited)
 
@@ -152,7 +153,7 @@
         val validBurnTx: Boolean = {
 
             val hodlTokensBurned: Long = hodlTokensOut - hodlTokensIn
-            val expectedAmountBeforeFees: Long = (hodlTokensBurned * price) / precisionFactor // X: Here we convert the amount of hodlTokens burned into the amount of base tokens released from the bank.
+            val expectedAmountBeforeFees: Long = (hodlTokensBurned * priceNumerator) / priceDenominator // X: Here we convert the amount of hodlTokens burned into the amount of base tokens released from the bank.
             
             val dividend_1: BigInt = (expectedAmountBeforeFees.toBigInt * (bankFeeNum.toBigInt + devFeeNum.toBigInt)) // Here we want to determine the amount allocated to the bank and to the developers.
             val divisor_1: BigInt = feeDenom // This is never zero.
