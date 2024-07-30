@@ -1,19 +1,23 @@
-# phoenix-hodlcoin-contracts
-ErgoScript contracts for the Phoenix implementation of HodlCoin.
+ErgoScript Contracts for the Phoenix implementation of HodlCoin.
 
 ## Implementation Type
 1. [hodlERG](/hodlERG/README.md)
 2. [hodlToken](/hodlToken/README.md)
 
-## Fee Implementation Guidelines
-For the hodlCoin protocol, any implementation of the fee contract must send a minimum amount to Dr. Bruno Woltzenlogel Paleo's address: 9gnBtmSRBMaNTkLQUABoAqmU2wzn27hgqVvezAC9SU1VqFKZCp8
+## Fair Forking Rule
 
-- Let Q be the amount that must be sent to Bruno's address.
-- Let F be the bank fee percentage.
-- Let D be the developer fee percentage.
-- Then, Q >= 0.025 * (F/D)
+The hodlCoin R&D team wishes to promote permissionless forking of hodlCoin's concept in a way 
+that maximizes common wealth and promotes a culture of fair innovation and reuse of innovations, 
+while maintaining the ability of innovators to be rewarded for their work. 
 
-As long as this condition is satisfied, you may include any other constraint in your implementation of the fee contract.
+To this aim, the hodlCoin team generously licenses its work for commercial use by others as long as the Fair Forking Rule is satisfied.
+This rule is stated in the second page of the [hodlCoin Paper](https://eprint.iacr.org/2023/1029.pdf).
+
+**If you would like to fork hodlCoin's concept, you can. 
+But you must satisfy the fair forking rule.**
+
+This implementation is a faithful implementation of the hodlCoin protocol and it satisfies the fair forking rule.
 
 ## References
+
 The HodlCoin protocol paper can be found [here](https://eprint.iacr.org/2023/1029).
